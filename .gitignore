@@ -27,3 +27,4 @@ venv/
 .pdm-python
 1.py
 tmp.py
+logs/**
