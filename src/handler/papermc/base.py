@@ -1,6 +1,7 @@
-from ...utils import get_json, SyncLogger
+from ...utils import get_json, SyncLogger, cfg
 from traceback import format_exception
-
+import asyncio
+from asyncio import create_task
 
 class _ProjectList(object):
     def __init__(self) -> None:
@@ -18,27 +19,35 @@ class _ProjectList(object):
             SyncLogger.debug("PaperMC | Project list: {project_id_list}".format(project_id_list=self.project_id_list))
         elif self.project_id_list is None:
             SyncLogger.error("PaperMC | Project list load failed!")
-            self.load_self(retry=(retry+1))
+            return self.load_self(retry=(retry+1))
         # fmt: on
 
     async def load_all_projects(self) -> None:
         SyncLogger.info("PaperMC | Loading projects...")
-        for project_id in self.project_id_list:
-            await self.load_single_project(project_id=project_id)
-        SyncLogger.info("————————————————————————————————————————————————————")
+        if not cfg.get("force_fast_loading"):
+            for project_id in self.project_id_list:
+                await self.load_single_project(project_id=project_id)
+        else:
+            tasks = [create_task(self.load_single_project(project_id=project_id)) for project_id in self.project_id_list]
+            for task in tasks:
+                await task
+            del tasks
+        if not cfg.get("force_fast_loading"):
+            SyncLogger.info("————————————————————————————————————————————————————")
         SyncLogger.success("PaperMC | All projects were loaded.")
 
     async def load_single_project(self, project_id: str) -> None:
-        SyncLogger.info("————————————————————————————————————————————————————")
+        if not cfg.get("force_fast_loading"):
+            SyncLogger.info("————————————————————————————————————————————————————")
         SyncLogger.debug(
             "PaperMC | {project_id} | Loading project...".format(
                 project_id=project_id.capitalize()
             )
         )
-        p = Project(project_id=project_id)
         try:
+            p = Project(project_id=project_id)
             await p.load_self()
-            await p.load_version_list()
+            self.project_list.append(p)
         except Exception as e:
             SyncLogger.warning(
                 "PaperMC | {project_id} | Failed to load project!".format(
@@ -46,9 +55,8 @@ class _ProjectList(object):
                 )
             )
             SyncLogger.error("".join(format_exception(e)))
-        self.project_list.append(p)
         SyncLogger.success(
-            "PaperMC | {project_id} | Loaded.".format(
+            "PaperMC | {project_id} | All versions were loaded.".format(
                 project_id=project_id.capitalize()
             )
         )
@@ -87,7 +95,8 @@ class Project(object):
                     project_id=self.project_id.capitalize()
                 )
             )
-            self.load_self(retry=(retry + 1))
+            return self.load_self(retry=(retry + 1))
+        await self.load_version_list()
 
     async def load_version_list(self) -> None:
         SyncLogger.info(
@@ -95,8 +104,18 @@ class Project(object):
                 project_name=self.project_name
             )
         )
-        for version in self.version_label_list:
-            await self.load_single_version(version=version)
+        if not cfg.get("force_fast_loading"):
+            tasks = []
+            for version in self.version_label_list:
+                tasks.append(create_task(self.load_single_version(version=version)))
+            for task in tasks:
+                await task
+            del tasks
+        else:
+            tasks = [create_task(self.load_single_version(version=version)) for version in self.version_label_list]
+            for task in tasks:
+                await task
+            del tasks
 
     async def load_single_version(self, version: str) -> None:
         sv = SingleVersion(project_id=self.project_id, version=version)
@@ -111,7 +130,7 @@ class Project(object):
             SyncLogger.error("".join(format_exception(e)))
         self.versions.append(sv)
         SyncLogger.debug(
-            "PaperMC | {project_name} | {version} | Loaded.".format(
+            "PaperMC | {project_name} | {version} | All builds were loaded.".format(
                 project_name=self.project_name, version=version
             )
         )
@@ -154,7 +173,7 @@ class SingleVersion(object):
                     project_id=self.project_id.capitalize(), version=self.version
                 )
             )
-            self.load_self(retry=(retry + 1))
+            return self.load_self(retry=(retry + 1))
 
         self.builds_manager = BuildsManager(
             project_name=self.project_name,
@@ -164,15 +183,14 @@ class SingleVersion(object):
         await self.load_builds()
 
     async def load_builds(self) -> None:
-        for _ in self.builds_number:
-            await self.builds_manager.load_self()
+        await create_task(self.builds_manager.load_self())
 
 
 class SingleChange(object):
     def __init__(self, data: dict) -> None:
-        self.commit: str = data.get("commit")
-        self.summary: str = data.get("summary")
-        self.message: str = data.get("message")
+        self.commit: str = data.get("commit", None)
+        self.summary: str = data.get("summary", None)
+        self.message: str = data.get("message", None)
 
 
 class Changes(object):
@@ -236,14 +254,11 @@ class BuildsManager(object):
                     project_id=self.project_id, version=self.version
                 )
             )
-            self.project_id: str = tmp_data["project_id"]
-            self.project_name: str = tmp_data["project_name"]
-            self.version: str = tmp_data["version"]
             self.builds = [
                 SingleBuild(
                     name=self.project_name, version=self.version, build_info=build_info
                 )
-                for build_info in tmp_data["builds"]
+                for build_info in tmp_data.get("builds", None)
             ]
         except Exception as e:
             SyncLogger.warning(
