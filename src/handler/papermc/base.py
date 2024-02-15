@@ -1,4 +1,5 @@
 from ...utils import get_json, SyncLogger
+from traceback import format_exception
 
 
 class _ProjectList(object):
@@ -6,25 +7,51 @@ class _ProjectList(object):
         self.project_id_list: list = []
         self.project_list: list = []
 
-    async def load_self(self) -> None:
+    async def load_self(self, retry: int = 0) -> None:
         # fmt: off
+        if retry:
+            SyncLogger.warning("PaperMC | Retrying getting project list...")
         SyncLogger.info("PaperMC | Loading project list...")
-        self.project_id_list = (await get_json("https://api.papermc.io/v2/projects/"))["projects"]  # noqa: E501
-        SyncLogger.success("PaperMC | Project list loaded.")
-        SyncLogger.debug("PaperMC | Project list: {project_id_list}".format(project_id_list=self.project_id_list))
+        self.project_id_list = (await get_json("https://api.papermc.io/v2/projects/")).get("projects", None)  # noqa: E501
+        if isinstance(self.project_id_list, list):
+            SyncLogger.success("PaperMC | Project list loaded.")
+            SyncLogger.debug("PaperMC | Project list: {project_id_list}".format(project_id_list=self.project_id_list))
+        elif self.project_id_list is None:
+            SyncLogger.error("PaperMC | Project list load failed!")
+            self.load_self(retry=(retry+1))
         # fmt: on
 
     async def load_all_projects(self) -> None:
         SyncLogger.info("PaperMC | Loading projects...")
         for project_id in self.project_id_list:
             await self.load_single_project(project_id=project_id)
+        SyncLogger.info("————————————————————————————————————————————————————")
         SyncLogger.success("PaperMC | All projects were loaded.")
 
     async def load_single_project(self, project_id: str) -> None:
-        SyncLogger.debug("PaperMC | Loading project: \"{project_id}\"".format(project_id=project_id))
-        self.project_list.append((p := Project(project_id=project_id)))
-        await p.load_self()
-        SyncLogger.info("PaperMC | Project \"{project_id}\" loaded.".format(project_id=project_id))
+        SyncLogger.info("————————————————————————————————————————————————————")
+        SyncLogger.debug(
+            "PaperMC | {project_id} | Loading project...".format(
+                project_id=project_id.capitalize()
+            )
+        )
+        p = Project(project_id=project_id)
+        try:
+            await p.load_self()
+            await p.load_version_list()
+        except Exception as e:
+            SyncLogger.warning(
+                "PaperMC | {project_id} | Failed to load project!".format(
+                    project_id=project_id.capitalize()
+                )
+            )
+            SyncLogger.error("".join(format_exception(e)))
+        self.project_list.append(p)
+        SyncLogger.success(
+            "PaperMC | {project_id} | Loaded.".format(
+                project_id=project_id.capitalize()
+            )
+        )
 
 
 class Project(object):
@@ -32,49 +59,138 @@ class Project(object):
         self.project_id: str = project_id
         self.project_name: str = []
         self.version_groups: list = []
-        self.versions: list = []
+        self.version_label_list: list = []
+        self.versions: list[SingleVersion] = []
 
-    async def load_self(self) -> None:
+    async def load_self(self, retry: int = 0) -> None:
+        if retry:
+            SyncLogger.warning(
+                "PaperMC | {project_id} | Retrying getting project info..."
+            )
         tmp_data = await get_json(
             "https://api.papermc.io/v2/projects/{project_id}/".format(
                 project_id=self.project_id
             )
-        )
+        )  # type: dict
 
-        self.project_name: str = tmp_data["project_name"]
-        self.version_groups: list = tmp_data["version_groups"]
-        self.versions: list = tmp_data["versions"]
+        self.project_name = tmp_data.get("project_name", None)
+        self.version_groups = tmp_data.get("version_groups", None)
+        self.version_label_list = tmp_data.get("versions", None)
+
+        if (
+            self.project_name is None
+            or self.version_groups is None
+            or self.version_label_list is None
+        ):
+            SyncLogger.error(
+                "PaperMC | {project_id} | Project info load failed!".format(
+                    project_id=self.project_id.capitalize()
+                )
+            )
+            self.load_self(retry=(retry + 1))
+
+    async def load_version_list(self) -> None:
+        SyncLogger.info(
+            "PaperMC | {project_name} | Loading version list...".format(
+                project_name=self.project_name
+            )
+        )
+        for version in self.version_label_list:
+            await self.load_single_version(version=version)
+
+    async def load_single_version(self, version: str) -> None:
+        sv = SingleVersion(project_id=self.project_id, version=version)
+        try:
+            await sv.load_self()
+        except Exception as e:
+            SyncLogger.warning(
+                "PaperMC | {project_name} | {version} | Failed to load version list!".format(
+                    project_name=self.project_name, version=version
+                )
+            )
+            SyncLogger.error("".join(format_exception(e)))
+        self.versions.append(sv)
+        SyncLogger.debug(
+            "PaperMC | {project_name} | {version} | Loaded.".format(
+                project_name=self.project_name, version=version
+            )
+        )
 
 
 class SingleVersion(object):
     # https://api.papermc.io/v2/projects/{project_id}/versions/{version}/
-    def __init__(self, data: dict) -> None:
-        self.project_id: str = data["project_id"]
-        self.project_name: str = data["project_name"]
-        self.version: str = data["version"]
-        self.builds_number: list = data["builds"]
-        self.builds: list = []
+    def __init__(self, project_id: str, version: str) -> None:
+        self.project_id: str = ""
+        self.project_name: str = ""
+        self.version: str = ""
+        self.builds_number: list = []
+        self.project_id: str = project_id
+        self.version: str = version
+        self.builds_manager: BuildsManager | None = None
+
+    async def load_self(self, retry: int = 0) -> None:
+        if retry:
+            SyncLogger.warning(
+                "PaperMC | {project_id} | {version} | Retrying getting version info..."
+            )
+        tmp_data = await get_json(
+            "https://api.papermc.io/v2/projects/{project_id}/versions/{version}/".format(
+                project_id=self.project_id, version=self.version
+            )
+        )
+        self.project_id: str = tmp_data.get("project_id", None)
+        self.project_name: str = tmp_data.get("project_name", None)
+        self.version: str = tmp_data.get("version", None)
+        self.builds_number: list = tmp_data.get("builds", None)
+
+        if (
+            self.project_id is None
+            or self.project_name is None
+            or self.version is None
+            or self.builds_number is None
+        ):
+            SyncLogger.error(
+                "PaperMC | {project_id} | {version} | Failed to get version info!".format(
+                    project_id=self.project_id.capitalize(), version=self.version
+                )
+            )
+            self.load_self(retry=(retry + 1))
+
+        self.builds_manager = BuildsManager(
+            project_name=self.project_name,
+            project_id=self.project_id,
+            version=self.version,
+        )
+        await self.load_builds()
+
+    async def load_builds(self) -> None:
+        for _ in self.builds_number:
+            await self.builds_manager.load_self()
 
 
 class SingleChange(object):
     def __init__(self, data: dict) -> None:
-        self.commit: str = data["commit"]
-        self.summary: str = data["summary"]
-        self.message: str = data["message"]
+        self.commit: str = data.get("commit")
+        self.summary: str = data.get("summary")
+        self.message: str = data.get("message")
 
 
 class Changes(object):
-    def __init__(self, data: dict) -> None:
-        self.changes: list = [SingleChange(data) for data in data["changes"]]
+    def __init__(self, data: list[dict]) -> None:
+        self.changes: list = [SingleChange(data[length]) for length in range(len(data))]
 
 
 class SingleDownload(object):
     def __init__(self, data: dict, name: str, version: str, build: int) -> None:
-        self.name: str = data["name"]
+        if data is None:
+            self.name = None
+            self.sha256 = None
+        else:
+            self.name: str = data.get("name", None)
+            self.sha256: str = data.get("sha256", None)
         self.link: str = "https://api.papermc.io/v2/projects/{name}/versions/{version}/builds/{build}/downloads/{file_name}/".format(
             name=name, version=version, build=build, file_name=self.name
         )
-        self.sha256: str = data["sha256"]
 
     def __str__(self) -> str:
         return self.link
@@ -83,32 +199,60 @@ class SingleDownload(object):
 class Downloads(object):
     def __init__(self, data: dict, name: str, version: str, build: int) -> None:
         self.application: SingleDownload = SingleDownload(
-            data=data["application"], name=name, version=version, build=build
+            data=data.get("application", None), name=name, version=version, build=build
         )
         self.mojmap: SingleDownload = SingleDownload(
-            data=data["mojang-mappings"], name=name, version=version, build=build
+            data=data.get("mojang-mappings", None),
+            name=name,
+            version=version,
+            build=build,
         )
 
 
 class SingleBuild(object):
-    def __init__(self, data: dict) -> None:
-        self.build: int = data["build"]
-        self.time: int = data["time"]
-        self.channel: int = data["channel"]
-        self.promoted: int = data["promoted"]
-        self.changes: Changes = Changes(data["changes"])
-        self.downloads: dict[str, Downloads] = {
-            "application": Downloads(data["downloads"]["application"]),
-            "mojang-mappings": Downloads(data["downloads"]["mojang-mappings"]),
-        }
+    def __init__(self, name: str, version: str, build_info: dict) -> None:
+        self.build: int = build_info["build"]
+        self.time: int = build_info["time"]
+        self.channel: int = build_info["channel"]
+        self.promoted: int = build_info["promoted"]
+        self.changes: Changes = Changes(build_info["changes"])
+        self.downloads: Downloads = Downloads(
+            data=build_info["downloads"], name=name, version=version, build=self.build
+        )
 
 
-class Builds(object):
+class BuildsManager(object):
     # https://api.papermc.io/v2/projects/{name}/versions/{version}/builds/
-    def __init__(self, data: dict) -> None:
-        self.project_id: str = data["project_id"]
-        self.project_name: str = data["project_name"]
-        self.version: str = data["version"]
-        self.builds: list[SingleBuild] = [SingleBuild(data) for data in data["builds"]]
+    def __init__(self, project_name: str, project_id: str, version: str) -> None:
+        self.project_name: str = project_name
+        self.project_id: str = project_id
+        self.version: str = version
+        self.builds: list[SingleBuild] = []
+
+    async def load_self(self) -> None:
+        try:
+            tmp_data = await get_json(
+                "https://api.papermc.io/v2/projects/{project_id}/versions/{version}/builds/".format(
+                    project_id=self.project_id, version=self.version
+                )
+            )
+            self.project_id: str = tmp_data["project_id"]
+            self.project_name: str = tmp_data["project_name"]
+            self.version: str = tmp_data["version"]
+            self.builds = [
+                SingleBuild(
+                    name=self.project_name, version=self.version, build_info=build_info
+                )
+                for build_info in tmp_data["builds"]
+            ]
+        except Exception as e:
+            SyncLogger.warning(
+                "PaperMC | {project_name} | {version} | Failed to load builds!".format(
+                    project_name=self.project_name,
+                    version=self.version,
+                )
+            )
+            SyncLogger.error("".join(format_exception(e)))
+
 
 PaperLoader = _ProjectList

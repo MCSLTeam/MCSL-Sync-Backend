@@ -1,4 +1,4 @@
-def singleton(cls):
+def Singleton(cls):
     instances = {}
 
     def get_instance(*args, **kwargs):

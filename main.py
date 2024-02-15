@@ -1,10 +1,6 @@
 import asyncio
-from src.handler.papermc.base import PaperLoader
+from src.handler.papermc import papermc_runner
 
 
-async def main() -> None:
-    project_list = PaperLoader()
-    await project_list.load_self()
-    await project_list.load_all_projects()
-
-asyncio.run(main())
+asyncio.run(papermc_runner())
+input()

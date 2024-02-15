@@ -1,4 +1,3 @@
-from typing import Any
 from aiohttp import ClientSession
 
 
@@ -13,7 +12,7 @@ async def get_proxy() -> str | None:
     return proxy
 
 
-async def get_json(link: str) -> Any:
+async def get_json(link: str) -> dict | list | None:
     trust_env = not bool(isinstance(await get_proxy(), str))
     async with ClientSession(
         trust_env=trust_env,
