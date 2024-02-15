@@ -12,4 +12,4 @@ SyncLogger.add(
     compression="zip",
     retention="10 days",
 )
-SyncLogger.info("MCSL Sync Core is Loading...")
+SyncLogger.info("MCSL Sync Core is loading...")
