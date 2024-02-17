@@ -1,7 +1,7 @@
 from ...utils import get_json, SyncLogger, cfg
 from traceback import format_exception
-import asyncio
 from asyncio import create_task
+
 
 class _ProjectList(object):
     def __init__(self) -> None:
@@ -28,7 +28,10 @@ class _ProjectList(object):
             for project_id in self.project_id_list:
                 await self.load_single_project(project_id=project_id)
         else:
-            tasks = [create_task(self.load_single_project(project_id=project_id)) for project_id in self.project_id_list]
+            tasks = [
+                create_task(self.load_single_project(project_id=project_id))
+                for project_id in self.project_id_list
+            ]
             for task in tasks:
                 await task
             del tasks
@@ -112,7 +115,10 @@ class Project(object):
                 await task
             del tasks
         else:
-            tasks = [create_task(self.load_single_version(version=version)) for version in self.version_label_list]
+            tasks = [
+                create_task(self.load_single_version(version=version))
+                for version in self.version_label_list
+            ]
             for task in tasks:
                 await task
             del tasks

@@ -1,3 +1,4 @@
 aiohttp==3.9.3
 loguru==0.7.2
 orjson==3.9.14
+pandas==2.2.0
