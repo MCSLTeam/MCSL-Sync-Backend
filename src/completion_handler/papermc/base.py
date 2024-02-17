@@ -17,7 +17,6 @@ class _ProjectList(object):
         self.project_id_list = (await get_json("https://api.papermc.io/v2/projects/")).get("projects", None)  # noqa: E501
         if isinstance(self.project_id_list, list):
             SyncLogger.success("PaperMC | Project list loaded.")
-            SyncLogger.debug("PaperMC | Project list: {project_id_list}".format(project_id_list=self.project_id_list))
         elif self.project_id_list is None:
             SyncLogger.error("PaperMC | Project list load failed!")
             return self.load_self(retry=(retry+1))
@@ -122,7 +121,7 @@ class Project(object):
             SyncLogger.error("".join(format_exception(e)))
         self.versions.append(sv)
         with open(
-            f"data/{self.project_name}.json",
+            f"data/core_info/{self.project_name}.json",
             "wb+",
         ) as f:
             f.write(dumps(await self.gather_project(), option=OPT_INDENT_2))
@@ -222,11 +221,11 @@ class SingleBuild(object):
 
     async def gather_single_build(self) -> dict[str, str]:
         return {
-            "sync_time": self.time,
+            "sync_time": str(self.time),
             "download_url": str(self.downloads),
             "core_type": self.name,
-            "mc_version": self.version,
-            "build_version": self.build,
+            "mc_version": str(self.version),
+            "core_version": str(self.build),
         }
 
 

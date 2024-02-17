@@ -2,9 +2,9 @@ from .network import get_json
 
 
 class GitHubReleaseSerializer(object):
-    def __init__(self, user: str, repo: str) -> None:
+    def __init__(self, owner: str, repo: str) -> None:
         self.api_link = "https://api.github.com/repos/{user}/{repo}/releases".format(
-            user=user, repo=repo
+            user=owner, repo=repo
         )
         self.release_list: list[dict] = []
 
@@ -13,6 +13,8 @@ class GitHubReleaseSerializer(object):
         for data in tmp_data:
             self.release_list.append(
                 {
+                    "target_commitish": data["target_commitish"],
+                    "name": data["name"],
                     "tag_name": data["tag_name"],
                     "sync_time": data["published_at"],
                     "assets": data["assets"],
