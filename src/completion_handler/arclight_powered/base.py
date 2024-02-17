@@ -5,7 +5,7 @@ from orjson import dumps, OPT_INDENT_2
 
 class ArclightReleaseSerializer(GitHubReleaseSerializer):
     def __init__(self) -> None:
-        super().__init__(user="IzzelAliz", repo="Arclight")
+        super().__init__(owner="IzzelAliz", repo="Arclight")
 
     async def get_assets(self) -> None:
         await self.get_release_data()
@@ -15,9 +15,11 @@ class ArclightReleaseSerializer(GitHubReleaseSerializer):
                 release["tag_name"].split("/")
             )
             release.pop("tag_name")
+            release.pop("target_commitish")
+            release.pop("name")
 
         arclight_res = await self.sort_by_mc_versions()
-        with open("data/Arclight.json", "wb+") as f:
+        with open("data/core_info/Arclight.json", "wb+") as f:
             f.write(dumps(arclight_res, option=OPT_INDENT_2))
         SyncLogger.success("ArclightPowered | Arclight | All versions were loaded.")
 
@@ -32,7 +34,7 @@ class ArclightReleaseSerializer(GitHubReleaseSerializer):
 
 class LightfallReleaseSerializer(GitHubReleaseSerializer):
     def __init__(self) -> None:
-        super().__init__(user="ArclightPowered", repo="lightfall")
+        super().__init__(owner="ArclightPowered", repo="lightfall")
 
     async def get_assets(self) -> None:
         await self.get_release_data()
@@ -42,9 +44,11 @@ class LightfallReleaseSerializer(GitHubReleaseSerializer):
                 release["tag_name"].split("-")
             )
             release.pop("tag_name")
+            release.pop("target_commitish")
+            release.pop("name")
 
         lightfall_res = await self.sort_by_mc_versions()
-        with open("data/Lightfall.json", "wb+") as f:
+        with open("data/core_info/Lightfall.json", "wb+") as f:
             f.write(dumps(lightfall_res, option=OPT_INDENT_2))
         SyncLogger.success("ArclightPowered | Lightfall | All versions were loaded.")
 
