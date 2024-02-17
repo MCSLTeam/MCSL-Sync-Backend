@@ -1,5 +1,4 @@
 from ...utils import GitHubReleaseSerializer, SyncLogger
-from pandas import DataFrame
 from orjson import dumps, OPT_INDENT_2
 
 

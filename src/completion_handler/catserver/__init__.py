@@ -1,1 +1,1 @@
-from .runner import catserver_powered_runner  # noqa: F401
+from .runner import catserver_runner  # noqa: F401

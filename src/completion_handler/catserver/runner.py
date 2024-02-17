@@ -2,7 +2,7 @@ from .base import CatServerReleaseSerializer
 from ...utils import SyncLogger, cfg
 
 
-async def catserver_powered_runner() -> None:
+async def catserver_runner() -> None:
     import time
 
     start = time.perf_counter()
