@@ -25,7 +25,7 @@ class _ProjectList(object):
 
     async def load_all_projects(self) -> None:
         SyncLogger.info("PaperMC | Loading projects...")
-        if not cfg.get("force_fast_loading"):
+        if not cfg.get("fast_loading"):
             for project_id in self.project_id_list:
                 await self.load_single_project(project_id=project_id)
         else:
@@ -36,7 +36,6 @@ class _ProjectList(object):
             for task in tasks:
                 await task
             del tasks
-        SyncLogger.success("PaperMC | All projects were loaded.")
 
     async def load_single_project(self, project_id: str) -> None:
         try:
@@ -94,7 +93,7 @@ class Project(object):
         await self.load_version_list()
 
     async def load_version_list(self) -> None:
-        if not cfg.get("force_fast_loading"):
+        if not cfg.get("fast_loading"):
             tasks = []
             for version in self.version_label_list:
                 tasks.append(create_task(self.load_single_version(version=version)))
@@ -123,7 +122,7 @@ class Project(object):
             SyncLogger.error("".join(format_exception(e)))
         self.versions.append(sv)
         with open(
-            f"data/PaperMC/{self.project_name}.json",
+            f"data/{self.project_name}.json",
             "wb+",
         ) as f:
             f.write(dumps(await self.gather_project(), option=OPT_INDENT_2))
