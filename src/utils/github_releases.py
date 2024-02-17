@@ -28,10 +28,10 @@ class GitHubReleaseSerializer(object):
                 release["download_url"] = "https://github.moeyy.xyz/" + asset["browser_download_url"]
             release.pop("assets")
 
-    async def sort_by_mc_versions(self) -> list:
+    async def sort_by_mc_versions(self) -> dict:
         data_frame = DataFrame(self.release_list)
         groups = data_frame.groupby("mc_version").groups
-        res = []
+        res = {}
         for version, indices in groups.items():
-            res.append({version: data_frame.loc[indices].to_dict("records")})
+            res.update({version: data_frame.loc[indices].to_dict("records")})
         return res

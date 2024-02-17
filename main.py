@@ -1,11 +1,21 @@
 import asyncio
-from src.completion_handler import papermc_runner, arclight_powered_runner, catserver_runner, leavesmc_runner
+from src.completion_handler import (
+    papermc_runner,
+    arclight_powered_runner,
+    catserver_runner,
+    leavesmc_runner,
+)
 from src.utils import cfg
 from os import makedirs
 
 
 async def main():
-    coroutine_list = [leavesmc_runner]
+    coroutine_list = [
+        papermc_runner,
+        arclight_powered_runner,
+        catserver_runner,
+        leavesmc_runner,
+    ]
     if cfg.get("fast_loading"):
         tasks = [asyncio.create_task(coroutine()) for coroutine in coroutine_list]
         for task in tasks:

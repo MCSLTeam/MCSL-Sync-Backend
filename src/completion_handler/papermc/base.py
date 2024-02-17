@@ -126,8 +126,8 @@ class Project(object):
             SyncLogger.error("".join(format_exception(e)))
         self.versions.append(sv)
 
-    async def gather_project(self) -> list:
-        return [await version.gather_version() for version in self.versions]
+    async def gather_project(self) -> dict:
+        return {version.version: [await version.gather_version()] for version in self.versions}
 
 
 class SingleVersion(object):
@@ -178,7 +178,7 @@ class SingleVersion(object):
     async def load_builds(self) -> None:
         await create_task(self.builds_manager.load_self())
 
-    async def gather_version(self) -> dict[str, list]:
+    async def gather_version(self) -> list:
         return await self.builds_manager.gather_builds()
 
 
@@ -257,10 +257,8 @@ class BuildsManager(object):
             )
             SyncLogger.error("".join(format_exception(e)))
 
-    async def gather_builds(self) -> dict[str, list]:
-        return {
-            self.version: [await build.gather_single_build() for build in self.builds]
-        }
+    async def gather_builds(self) -> list:
+        return [await build.gather_single_build() for build in self.builds]
 
 
 PaperLoader = _ProjectList
