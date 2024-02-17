@@ -1,4 +1,4 @@
-from ...utils import GitHubReleaseSerializer
+from ...utils import GitHubReleaseSerializer, SyncLogger
 from pandas import DataFrame
 from orjson import dumps, OPT_INDENT_2
 
@@ -19,6 +19,7 @@ class ArclightReleaseSerializer(GitHubReleaseSerializer):
         arclight_res = await self.sort_by_mc_versions()
         with open("data/ArclightPowered/Arclight.json", "wb+") as f:
             f.write(dumps(arclight_res, option=OPT_INDENT_2))
+        SyncLogger.success("ArclightPowered | Arclight | All versions were loaded.")
 
     async def sort_by_mc_versions(self) -> list:
         data_frame = DataFrame(self.release_list)

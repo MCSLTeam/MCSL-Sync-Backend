@@ -1,1 +1,1 @@
-from .runner import papermc_runner
+from .runner import papermc_runner  # noqa: F401
