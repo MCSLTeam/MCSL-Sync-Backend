@@ -1,15 +1,15 @@
 from .base import ArclightReleaseSerializer
 from ...utils import SyncLogger, cfg
-from orjson import dumps
+from os import makedirs
+
 
 async def arclight_powered_runner() -> None:
     SyncLogger.info("ArclightPowered | Loading components...")
     import time
 
+    makedirs("data/ArclightPowered", exist_ok=True)
     start = time.perf_counter()
-    serializer = ArclightReleaseSerializer()
-    await serializer.get_assets()
-    print(dumps(await serializer.sort_mc_versions()))
+    await ArclightReleaseSerializer().get_assets()
     elpased_time = time.perf_counter() - start
 
     SyncLogger.info(

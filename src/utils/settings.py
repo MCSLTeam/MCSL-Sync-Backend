@@ -1,4 +1,4 @@
-from orjson import loads, dumps
+from orjson import loads, dumps, OPT_INDENT_2
 from os import path as osp, makedirs
 from .logger import SyncLogger
 
@@ -15,7 +15,7 @@ if not osp.exists("data/settings.json"):
         mode="w+",
         encoding="utf-8",
     ) as newConfig:
-        newConfig.write(dumps(config_template).decode("utf-8"))
+        newConfig.write(dumps(config_template, option=OPT_INDENT_2).decode("utf-8"))
 else:
     pass
 with open(file="data/settings.json", mode="r", encoding="utf-8") as f:

@@ -1,6 +1,7 @@
 from ...utils import get_json, SyncLogger, cfg
 from traceback import format_exception
 from asyncio import create_task
+from orjson import dumps, OPT_INDENT_2
 
 
 class _ProjectList(object):
@@ -35,18 +36,9 @@ class _ProjectList(object):
             for task in tasks:
                 await task
             del tasks
-        if not cfg.get("force_fast_loading"):
-            SyncLogger.info("————————————————————————————————————————————————————")
         SyncLogger.success("PaperMC | All projects were loaded.")
 
     async def load_single_project(self, project_id: str) -> None:
-        if not cfg.get("force_fast_loading"):
-            SyncLogger.info("————————————————————————————————————————————————————")
-        SyncLogger.debug(
-            "PaperMC | {project_id} | Loading project...".format(
-                project_id=project_id.capitalize()
-            )
-        )
         try:
             p = Project(project_id=project_id)
             await p.load_self()
@@ -68,7 +60,7 @@ class _ProjectList(object):
 class Project(object):
     def __init__(self, project_id: str) -> None:
         self.project_id: str = project_id
-        self.project_name: str = []
+        self.project_name: str = ""
         self.version_groups: list = []
         self.version_label_list: list = []
         self.versions: list[SingleVersion] = []
@@ -102,11 +94,6 @@ class Project(object):
         await self.load_version_list()
 
     async def load_version_list(self) -> None:
-        SyncLogger.info(
-            "PaperMC | {project_name} | Loading version list...".format(
-                project_name=self.project_name
-            )
-        )
         if not cfg.get("force_fast_loading"):
             tasks = []
             for version in self.version_label_list:
@@ -135,11 +122,14 @@ class Project(object):
             )
             SyncLogger.error("".join(format_exception(e)))
         self.versions.append(sv)
-        SyncLogger.debug(
-            "PaperMC | {project_name} | {version} | All builds were loaded.".format(
-                project_name=self.project_name, version=version
-            )
-        )
+        with open(
+            f"data/PaperMC/{self.project_name}.json",
+            "wb+",
+        ) as f:
+            f.write(dumps(await self.gather_project(), option=OPT_INDENT_2))
+
+    async def gather_project(self) -> list:
+        return [await version.gather_version() for version in self.versions]
 
 
 class SingleVersion(object):
@@ -191,17 +181,8 @@ class SingleVersion(object):
     async def load_builds(self) -> None:
         await create_task(self.builds_manager.load_self())
 
-
-class SingleChange(object):
-    def __init__(self, data: dict) -> None:
-        self.commit: str = data.get("commit", None)
-        self.summary: str = data.get("summary", None)
-        self.message: str = data.get("message", None)
-
-
-class Changes(object):
-    def __init__(self, data: list[dict]) -> None:
-        self.changes: list = [SingleChange(data[length]) for length in range(len(data))]
+    async def gather_version(self) -> dict[str, list]:
+        return await self.builds_manager.gather_builds()
 
 
 class SingleDownload(object):
@@ -225,24 +206,29 @@ class Downloads(object):
         self.application: SingleDownload = SingleDownload(
             data=data.get("application", None), name=name, version=version, build=build
         )
-        self.mojmap: SingleDownload = SingleDownload(
-            data=data.get("mojang-mappings", None),
-            name=name,
-            version=version,
-            build=build,
-        )
+
+    def __str__(self) -> str:
+        return self.application.link
 
 
 class SingleBuild(object):
     def __init__(self, name: str, version: str, build_info: dict) -> None:
+        self.name = name
+        self.version: str = version
         self.build: int = build_info["build"]
         self.time: int = build_info["time"]
-        self.channel: int = build_info["channel"]
-        self.promoted: int = build_info["promoted"]
-        self.changes: Changes = Changes(build_info["changes"])
         self.downloads: Downloads = Downloads(
             data=build_info["downloads"], name=name, version=version, build=self.build
         )
+
+    async def gather_single_build(self) -> dict[str, str]:
+        return {
+            "sync_time": self.time,
+            "download_url": str(self.downloads),
+            "core_type": self.name,
+            "mc_version": self.version,
+            "build_version": self.build,
+        }
 
 
 class BuildsManager(object):
@@ -274,6 +260,11 @@ class BuildsManager(object):
                 )
             )
             SyncLogger.error("".join(format_exception(e)))
+
+    async def gather_builds(self) -> dict[str, list]:
+        return {
+            self.version: [await build.gather_single_build() for build in self.builds]
+        }
 
 
 PaperLoader = _ProjectList

@@ -1,5 +1,6 @@
 from ...utils import GitHubReleaseSerializer
 from pandas import DataFrame
+from orjson import dumps, OPT_INDENT_2
 
 
 class ArclightReleaseSerializer(GitHubReleaseSerializer):
@@ -15,10 +16,14 @@ class ArclightReleaseSerializer(GitHubReleaseSerializer):
             )
             release.pop("tag_name")
 
-    async def sort_mc_versions(self) -> dict:
+        arclight_res = await self.sort_by_mc_versions()
+        with open("data/ArclightPowered/Arclight.json", "wb+") as f:
+            f.write(dumps(arclight_res, option=OPT_INDENT_2))
+
+    async def sort_by_mc_versions(self) -> list:
         data_frame = DataFrame(self.release_list)
         groups = data_frame.groupby("mc_version").groups
-        aaa = {}
+        res = []
         for version, indices in groups.items():
-            aaa.update({version: data_frame.loc[indices].to_dict("records")})
-        return aaa
+            res.append({version: data_frame.loc[indices].to_dict("records")})
+        return res
