@@ -21,11 +21,3 @@ class CatServerReleaseSerializer(GitHubReleaseSerializer):
         with open("data/core_info/CatServer.json", "wb+") as f:
             f.write(dumps(catserver_res, option=OPT_INDENT_2))
         SyncLogger.success("CatServer | All versions were loaded.")
-
-    async def sort_by_mc_versions(self) -> list:
-        data_frame = DataFrame(self.release_list)
-        groups = data_frame.groupby("mc_version").groups
-        res = []
-        for version, indices in groups.items():
-            res.append({version: data_frame.loc[indices].to_dict("records")})
-        return res

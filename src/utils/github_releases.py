@@ -1,5 +1,5 @@
 from .network import get_json
-
+from pandas import DataFrame
 
 class GitHubReleaseSerializer(object):
     def __init__(self, owner: str, repo: str) -> None:
@@ -27,3 +27,11 @@ class GitHubReleaseSerializer(object):
             for asset in release["assets"]:
                 release["download_url"] = "https://github.moeyy.xyz/" + asset["browser_download_url"]
             release.pop("assets")
+
+    async def sort_by_mc_versions(self) -> list:
+        data_frame = DataFrame(self.release_list)
+        groups = data_frame.groupby("mc_version").groups
+        res = []
+        for version, indices in groups.items():
+            res.append({version: data_frame.loc[indices].to_dict("records")})
+        return res

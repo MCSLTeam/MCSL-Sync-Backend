@@ -1,4 +1,4 @@
-from .base import ArclightReleaseSerializer, LightfallReleaseSerializer
+from .base import ArclightReleaseSerializer, LightfallReleaseSerializer, LightfallClientReleaseSerializer
 from ...utils import SyncLogger, cfg
 
 
@@ -9,6 +9,7 @@ async def arclight_powered_runner() -> None:
 
     await ArclightReleaseSerializer().get_assets()
     await LightfallReleaseSerializer().get_assets()
+    await LightfallClientReleaseSerializer().get_assets()
 
     elpased_time = time.perf_counter() - start
 

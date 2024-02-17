@@ -1,5 +1,5 @@
 from ...utils import GitHubReleaseSerializer, SyncLogger
-from pandas import DataFrame
+
 from orjson import dumps, OPT_INDENT_2
 
 
@@ -23,14 +23,6 @@ class ArclightReleaseSerializer(GitHubReleaseSerializer):
             f.write(dumps(arclight_res, option=OPT_INDENT_2))
         SyncLogger.success("ArclightPowered | Arclight | All versions were loaded.")
 
-    async def sort_by_mc_versions(self) -> list:
-        data_frame = DataFrame(self.release_list)
-        groups = data_frame.groupby("mc_version").groups
-        res = []
-        for version, indices in groups.items():
-            res.append({version: data_frame.loc[indices].to_dict("records")})
-        return res
-
 
 class LightfallReleaseSerializer(GitHubReleaseSerializer):
     def __init__(self) -> None:
@@ -52,10 +44,23 @@ class LightfallReleaseSerializer(GitHubReleaseSerializer):
             f.write(dumps(lightfall_res, option=OPT_INDENT_2))
         SyncLogger.success("ArclightPowered | Lightfall | All versions were loaded.")
 
-    async def sort_by_mc_versions(self) -> list:
-        data_frame = DataFrame(self.release_list)
-        groups = data_frame.groupby("mc_version").groups
-        res = []
-        for version, indices in groups.items():
-            res.append({version: data_frame.loc[indices].to_dict("records")})
-        return res
+
+class LightfallClientReleaseSerializer(GitHubReleaseSerializer):
+    def __init__(self) -> None:
+        super().__init__(owner="ArclightPowered", repo="lightfall-client")
+
+    async def get_assets(self) -> None:
+        await self.get_release_data()
+        for release in self.release_list:
+            release["core_type"] = "LightfallClient"
+            release["mc_version"], release["core_version"] = tuple(
+                release["tag_name"].split("-")
+            )
+            release.pop("tag_name")
+            release.pop("target_commitish")
+            release.pop("name")
+
+        lightfall_client_res = await self.sort_by_mc_versions()
+        with open("data/core_info/LightfallClient.json", "wb+") as f:
+            f.write(dumps(lightfall_client_res, option=OPT_INDENT_2))
+        SyncLogger.success("ArclightPowered | LightfallClient | All versions were loaded.")
