@@ -6,16 +6,15 @@ from src.completion_handler import (
     leavesmc_runner,
     sponge_powered_runner,
 )
-from src.utils import cfg
+from src.utils import cfg, SyncLogger
 from os import makedirs
+import sys
 
-
-async def main():
+async def update_default():
     coroutine_list = [
         papermc_runner,
         arclight_powered_runner,
         catserver_runner,
-        leavesmc_runner,
         sponge_powered_runner,
     ]
     if cfg.get("fast_loading"):
@@ -26,7 +25,17 @@ async def main():
         for coroutine in coroutine_list:
             await coroutine()
 
+async def update_leavesmc():
+    if cfg.get("fast_loading"):
+        await asyncio.create_task(leavesmc_runner())
+    else:
+        await leavesmc_runner()
+
 
 if __name__ == "__main__":
     makedirs("data/core_info", exist_ok=True)
-    asyncio.run(main())
+    if "--update-default" in sys.argv:
+        asyncio.run(update_default())
+    if "--update-leaves" in sys.argv:
+        SyncLogger.warning("GFW causes the API of LeavesMC to be unstable. Please wait patiently.")
+        asyncio.run(update_default())
