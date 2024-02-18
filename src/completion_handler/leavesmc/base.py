@@ -15,10 +15,8 @@ class LeavesLoader(object):
     async def load_self(self, retry: int = 0) -> None:
         if retry:
             SyncLogger.warning(
-                "LeavesMC | {project_id} | Retrying getting project info..."
+                "Leaves | Retrying getting project info..."
             )
-        else:
-            SyncLogger.info("LeavesMC | Leaves | Loading project...")
         tmp_data = await get_json(
             "https://api.leavesmc.top/v2/projects/{project_id}/".format(
                 project_id=self.project_id
@@ -35,7 +33,7 @@ class LeavesLoader(object):
             or self.version_label_list is None
         ):
             SyncLogger.error(
-                "LeavesMC | {project_id} | Project info load failed!".format(
+                "{project_id} | Project info load failed!".format(
                     project_id=self.project_id.capitalize()
                 )
             )
@@ -70,17 +68,17 @@ class LeavesLoader(object):
             await sv.load_self()
         except Exception as e:
             SyncLogger.warning(
-                "LeavesMC | {project_name} | {version} | Failed to load version list!".format(
+                "{project_name} | {version} | Failed to load version list!".format(
                     project_name=self.project_name, version=version
                 )
             )
             SyncLogger.error("".join(format_exception(e)))
         self.versions.append(sv)
-        SyncLogger.success(
-            "LeavesMC | {project_name} | {version} | All builds were loaded.".format(
-                project_name=self.project_name, version=version
-            )
-        )
+        # SyncLogger.success(
+        #     "{project_name} | {version} | All builds were loaded.".format(
+        #         project_name=self.project_name, version=version
+        #     )
+        # )
 
     async def gather_project(self) -> dict:
         return {version.version: [await version.gather_version()] for version in self.versions}
@@ -99,7 +97,7 @@ class SingleVersion(object):
     async def load_self(self, retry: int = 0) -> None:
         if retry:
             SyncLogger.warning(
-                "LeavesMC | {project_id} | {version} | Retrying getting version info..."
+                "{project_id} | {version} | Retrying getting version info..."
             )
         tmp_data = await get_json(
             "https://api.leavesmc.top/v2/projects/{project_id}/versions/{version}/".format(
@@ -118,7 +116,7 @@ class SingleVersion(object):
             or self.builds_number is None
         ):
             SyncLogger.error(
-                "LeavesMC | {project_id} | {version} | Failed to get version info!".format(
+                "{project_id} | {version} | Failed to get version info!".format(
                     project_id=self.project_id.capitalize(), version=self.version
                 )
             )
@@ -220,7 +218,7 @@ class BuildsManager(object):
             del tmp_build_info_list
         except Exception as e:
             SyncLogger.warning(
-                "LeavesMC | {project_name} | {version} | Failed to load builds!".format(
+                "{project_name} | {version} | Failed to load builds!".format(
                     project_name=self.project_name,
                     version=self.version,
                 )

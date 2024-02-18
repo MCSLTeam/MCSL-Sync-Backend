@@ -21,7 +21,7 @@ class ArclightReleaseSerializer(GitHubReleaseSerializer):
         arclight_res = await self.sort_by_mc_versions()
         with open("data/core_info/Arclight.json", "wb+") as f:
             f.write(dumps(arclight_res, option=OPT_INDENT_2))
-        SyncLogger.success("ArclightPowered | Arclight | All versions were loaded.")
+        SyncLogger.success("Arclight | All versions were loaded.")
 
 
 class LightfallReleaseSerializer(GitHubReleaseSerializer):
@@ -42,7 +42,7 @@ class LightfallReleaseSerializer(GitHubReleaseSerializer):
         lightfall_res = await self.sort_by_mc_versions()
         with open("data/core_info/Lightfall.json", "wb+") as f:
             f.write(dumps(lightfall_res, option=OPT_INDENT_2))
-        SyncLogger.success("ArclightPowered | Lightfall | All versions were loaded.")
+        SyncLogger.success("Lightfall | All versions were loaded.")
 
 
 class LightfallClientReleaseSerializer(GitHubReleaseSerializer):
@@ -63,4 +63,4 @@ class LightfallClientReleaseSerializer(GitHubReleaseSerializer):
         lightfall_client_res = await self.sort_by_mc_versions()
         with open("data/core_info/LightfallClient.json", "wb+") as f:
             f.write(dumps(lightfall_client_res, option=OPT_INDENT_2))
-        SyncLogger.success("ArclightPowered | LightfallClient | All versions were loaded.")
+        SyncLogger.success("LightfallClient | All versions were loaded.")

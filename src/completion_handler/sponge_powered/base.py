@@ -12,10 +12,10 @@ class _ProjectList(object):
     async def load_self(self, retry: int = 0) -> None:
         # fmt: off
         if retry:
-            SyncLogger.warning("PaperMC | Retrying getting project list...")
-        self.project_id_list = (await get_json("https://api.papermc.io/v2/projects/")).get("projects", None)  # noqa: E501
+            SyncLogger.warning("SpongePowered | Retrying getting project list...")
+        self.project_id_list = (await get_json("https://dl-api.spongepowered.org/v2/groups/org.spongepowered/artifacts")).get("artifactIds", None)  # noqa: E501
         if self.project_id_list is None:
-            SyncLogger.error("PaperMC | Project list load failed!")
+            SyncLogger.error("SpongePowered | Project list load failed!")
             return self.load_self(retry=(retry+1))
         # fmt: on
 
@@ -64,13 +64,13 @@ class Project(object):
                 "{project_id} | Retrying getting project info..."
             )
         tmp_data = await get_json(
-            "https://api.papermc.io/v2/projects/{project_id}/".format(
+            "https://dl-api.spongepowered.org/v2/groups/org.spongepowered/artifacts/{project_id}".format(
                 project_id=self.project_id
             )
         )  # type: dict
 
-        self.project_name = tmp_data.get("project_name", None)
-        self.version_label_list = tmp_data.get("versions", None)
+        self.project_name = tmp_data.get("displayName", None)
+        self.version_label_list = tmp_data["tags"]["minecraft"]
 
         if self.project_name is None or self.version_label_list is None:
             SyncLogger.error(
@@ -120,8 +120,7 @@ class Project(object):
 
     async def gather_project(self) -> dict:
         return {
-            version.version: await version.gather_version()
-            for version in self.versions
+            version.version: await version.gather_version() for version in self.versions
         }
 
 
@@ -130,7 +129,7 @@ class SingleVersion(object):
         self.project_id: str = project_id
         self.project_name: str = project_name
         self.version: str = version
-        self.builds_number: list = []
+        self.build_label_list: list = []
         self.builds_manager: BuildsManager | None = None
 
     async def load_self(self, retry: int = 0) -> None:
@@ -138,14 +137,16 @@ class SingleVersion(object):
             SyncLogger.warning(
                 "{project_id} | {version} | Retrying getting version info..."
             )
-        tmp_data = await get_json(
-            "https://api.papermc.io/v2/projects/{project_id}/versions/{version}/".format(
-                project_id=self.project_id, version=self.version
-            )
+        self.build_label_list = list(
+            dict(
+                await get_json(
+                    "https://dl-api.spongepowered.org/v2/groups/org.spongepowered/artifacts/{project_id}/versions?tags=,minecraft:{version}&offset=0&limit=10".format(
+                        project_id=self.project_id, version=self.version
+                    )
+                )
+            ).get("artifacts", None)
         )
-        self.builds_number: list = tmp_data.get("builds", None)
-
-        if self.builds_number is None:
+        if self.build_label_list == [None]:
             SyncLogger.error(
                 "{project_id} | {version} | Failed to get version info!".format(
                     project_id=self.project_id.capitalize(), version=self.version
@@ -157,6 +158,7 @@ class SingleVersion(object):
             project_name=self.project_name,
             project_id=self.project_id,
             version=self.version,
+            build_label_list=self.build_label_list,
         )
         await self.load_builds()
 
@@ -167,83 +169,81 @@ class SingleVersion(object):
         return await self.builds_manager.gather_builds()
 
 
-class SingleDownload(object):
-    def __init__(self, data: dict, name: str, version: str, build: int) -> None:
-        if data is None:
-            self.name = None
-            self.sha256 = None
-        else:
-            self.name: str = data.get("name", None)
-            self.sha256: str = data.get("sha256", None)
-        self.link: str = "https://api.papermc.io/v2/projects/{name}/versions/{version}/builds/{build}/downloads/{file_name}/".format(
-            name=name, version=version, build=build, file_name=self.name
-        )
-
-    def __str__(self) -> str:
-        return self.link
-
-
-class Downloads(object):
-    def __init__(self, data: dict, name: str, version: str, build: int) -> None:
-        self.application: SingleDownload = SingleDownload(
-            data=data.get("application", None), name=name, version=version, build=build
-        )
-
-    def __str__(self) -> str:
-        return self.application.link
-
-
-class SingleBuild(object):
-    def __init__(self, name: str, version: str, build_info: dict) -> None:
-        self.name = name
-        self.version: str = version
-        self.build: int = build_info["build"]
-        self.time: int = build_info["time"]
-        self.downloads: Downloads = Downloads(
-            data=build_info["downloads"], name=name, version=version, build=self.build
-        )
-
-    async def gather_single_build(self) -> dict[str, str]:
-        return {
-            "sync_time": str(self.time),
-            "download_url": str(self.downloads),
-            "core_type": self.name,
-            "mc_version": str(self.version),
-            "core_version": str(self.build),
-        }
-
-
 class BuildsManager(object):
-    def __init__(self, project_name: str, project_id: str, version: str) -> None:
+    def __init__(
+        self, project_name: str, project_id: str, version: str, build_label_list: list
+    ) -> None:
         self.project_name: str = project_name
         self.project_id: str = project_id
         self.version: str = version
-        self.builds: list[SingleBuild] = []
+        self.build_label_list: list = build_label_list
+        self.builds: list = []
 
     async def load_self(self) -> None:
-        try:
-            tmp_data = await get_json(
-                "https://api.papermc.io/v2/projects/{project_id}/versions/{version}/builds/".format(
-                    project_id=self.project_id, version=self.version
+        self.builds = [
+            await get_json(
+                "https://dl-api.spongepowered.org/v2/groups/org.spongepowered/artifacts/{project_id}/versions/{build_label}".format(
+                    project_id=self.project_id, build_label=build_label
                 )
             )
-            self.builds = [
-                SingleBuild(
-                    name=self.project_name, version=self.version, build_info=build_info
-                )
-                for build_info in tmp_data.get("builds", None)
-            ]
-        except Exception as e:
+            for build_label in self.build_label_list
+        ]
+
+    async def get_universal_build(self, build_assets: list) -> str:
+        if build_assets is None:
             SyncLogger.warning(
-                "{project_name} | {version} | Failed to load builds!".format(
-                    project_name=self.project_name,
-                    version=self.version,
-                )
+                "Fuck you SpongePowered! You didn't synchronized your motherfuckers old API!"
             )
-            SyncLogger.error("".join(format_exception(e)))
+            return None
+        else:
+            try:
+                return [
+                    asset["downloadUrl"]
+                    for asset in build_assets
+                    if asset["classifier"] == "universal"
+                ][0]
+            except IndexError:
+                try:
+                    return [
+                        asset["downloadUrl"]
+                        for asset in build_assets
+                        if (asset["classifier"] == "" and asset["extension"] != "pom")
+                    ][0]
+                except IndexError:
+                    SyncLogger.warning(
+                        "Fuck you SpongePowered! You didn't built anything for this version!"
+                    )
+                    return None
 
     async def gather_builds(self) -> list:
-        return [await build.gather_single_build() for build in self.builds]
+        tmp_list = []
+        for build_info in self.builds:
+            if (
+                await self.get_universal_build(build_info.get("assets", None))
+                is not None
+            ):
+                tmp_list.append(
+                    {
+                        "sync_time": "1970-01-01T00:00:00.000Z",
+                        "download_url": await self.get_universal_build(
+                            build_info.get("assets", None)
+                        ),
+                        "core_type": self.project_name,
+                        "mc_version": str(self.version),
+                        "core_version": (
+                            str(
+                                build_info.get("coordinates", {})
+                                .get("version", "")
+                                .replace(str(self.version + "-"), "")
+                            )
+                            if build_info.get("coordinates", None) is not None
+                            else None
+                        ),
+                    }
+                )
+            else:
+                continue
+        return tmp_list
 
 
-PaperLoader = _ProjectList
+SpongePoweredLoader = _ProjectList
