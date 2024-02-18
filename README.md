@@ -1,3 +1,2 @@
-# MCSL-Sync-Core
-
+# MCSL-Sync
 A tool for synchronizing Minecraft server core files.

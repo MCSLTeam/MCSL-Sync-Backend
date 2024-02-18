@@ -10,4 +10,5 @@ venv/
 tmp.py
 logs/**
 data/*
+deps/*
 .ruff_cache/**
