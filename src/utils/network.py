@@ -1,6 +1,9 @@
 from aiohttp import ClientSession
 from .logger import version
+from .logger import SyncLogger
 
+
+@SyncLogger.catch
 async def get_proxy() -> str | None:
     from urllib.request import getproxies
 
@@ -12,6 +15,7 @@ async def get_proxy() -> str | None:
     return proxy
 
 
+@SyncLogger.catch
 async def get_json(link: str) -> dict | list | None:
     trust_env = not bool(isinstance(await get_proxy(), str))
     async with ClientSession(

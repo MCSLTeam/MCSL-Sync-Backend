@@ -5,3 +5,4 @@ from .logger import SyncLogger  # noqa: F401
 from .downloader import Downloader  # noqa: F401
 from .settings import cfg  # noqa: F401
 from .github_releases import GitHubReleaseSerializer  # noqa: F401
+from .jenkins import JenkinsCISerializer  # noqa: F401

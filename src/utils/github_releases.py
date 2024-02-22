@@ -1,5 +1,7 @@
 from .network import get_json
+from .logger import SyncLogger
 from pandas import DataFrame
+
 
 class GitHubReleaseSerializer(object):
     def __init__(self, owner: str, repo: str) -> None:
@@ -8,6 +10,7 @@ class GitHubReleaseSerializer(object):
         )
         self.release_list: list[dict] = []
 
+    @SyncLogger.catch
     async def get_release_data(self) -> None:
         tmp_data = await get_json(self.api_link)
         for data in tmp_data:
@@ -22,12 +25,16 @@ class GitHubReleaseSerializer(object):
             )
         await self.load_assets()
 
+    @SyncLogger.catch
     async def load_assets(self) -> None:
         for release in self.release_list:
             for asset in release["assets"]:
-                release["download_url"] = "https://github.moeyy.xyz/" + asset["browser_download_url"]
+                release["download_url"] = (
+                    "https://github.moeyy.xyz/" + asset["browser_download_url"]
+                )
             release.pop("assets")
 
+    @SyncLogger.catch
     async def sort_by_mc_versions(self) -> dict:
         data_frame = DataFrame(self.release_list)
         groups = data_frame.groupby("mc_version").groups

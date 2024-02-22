@@ -3,14 +3,14 @@ from loguru import logger
 version = "0.1.0"
 SyncLogger = logger
 SyncLogger.add(
-    sink="logs/latest.log",
+    sink="logs/{time}.log",
     format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {message}",
     level="DEBUG",
     backtrace=True,
     diagnose=True,
-    rotation="1536 KB",
+    rotation="500 KB",
     compression="gz",
-    retention="10 days",
+    retention="15 days",
 )
 print(
     f"""
