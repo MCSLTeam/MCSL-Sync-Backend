@@ -8,9 +8,9 @@ SyncLogger.add(
     level="DEBUG",
     backtrace=True,
     diagnose=True,
-    rotation="500 KB",
+    rotation="1 days",
     compression="gz",
-    retention="15 days",
+    retention="1 weeks",
 )
 print(
     f"""

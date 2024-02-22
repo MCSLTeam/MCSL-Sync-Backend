@@ -6,6 +6,7 @@ from src.completion_handler import (
     catserver_runner,
     sponge_powered_runner,
     bungeecord_runner,
+    pufferfish_runner,
 )
 from src.utils import cfg, SyncLogger
 from os import makedirs
@@ -13,11 +14,12 @@ import sys
 
 async def update_default():
     coroutine_list = [
-        papermc_runner,
-        arclight_powered_runner,
-        catserver_runner,
-        sponge_powered_runner,
-        bungeecord_runner,
+        # papermc_runner,
+        # arclight_powered_runner,
+        # catserver_runner,
+        # sponge_powered_runner,
+        # bungeecord_runner,
+        pufferfish_runner
     ]
     if cfg.get("fast_loading"):
         tasks = [asyncio.create_task(coroutine()) for coroutine in coroutine_list]
