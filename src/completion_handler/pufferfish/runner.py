@@ -10,11 +10,11 @@ async def pufferfish_runner() -> None:
     serializer = PufferfishCISerializer()
     await serializer.load()
     await serializer.load_versions()
-    # print(serializer.job_data)
-    # for name, data in serializer.job_data.items():
-    #     with open(f"data/core_info/{name}.json", "wb+") as f:
-    #         f.write(dumps(data, option=OPT_INDENT_2))
-    #     SyncLogger.info(f"{name} | All versions were loaded.")
+    print(serializer.job_data)
+    for name, data in serializer.job_data.items():
+        with open(f"data/core_info/{name}.json", "wb+") as f:
+            f.write(dumps(data, option=OPT_INDENT_2))
+        SyncLogger.info(f"{name} | All versions were loaded.")
 
     elpased_time = time.perf_counter() - start
 
