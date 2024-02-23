@@ -2,6 +2,7 @@ from .base import PufferfishCISerializer
 from ...utils import SyncLogger, cfg
 from orjson import dumps, OPT_INDENT_2
 
+
 async def pufferfish_runner() -> None:
     import time
 
@@ -15,8 +16,6 @@ async def pufferfish_runner() -> None:
             f.write(dumps(data, option=OPT_INDENT_2))
         SyncLogger.info(f"{name} | All versions were loaded.")
 
-    elpased_time = time.perf_counter() - start
-
     SyncLogger.info(
-        f"Pufferfish | Elpased time: {elpased_time:.2f}s. (Fast load {'enabled' if cfg.get('fast_loading') else 'disabled'})"
+        f"Pufferfish | Elpased time: {time.perf_counter() - start:.2f}s. (Fast load {'enabled' if cfg.get('fast_loading') else 'disabled'})"
     )

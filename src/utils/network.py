@@ -1,5 +1,5 @@
 from aiohttp import ClientSession
-from .logger import version
+from .logger import __version__
 from .logger import SyncLogger
 
 
@@ -21,7 +21,7 @@ async def get_json(link: str) -> dict | list | None:
     async with ClientSession(
         trust_env=trust_env,
         headers={
-            "User-Agent": f"MCSLSync/{version} Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+            "User-Agent": f"MCSLSync/{__version__} Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
         },
     ) as session:
         async with session.get(link) as response:

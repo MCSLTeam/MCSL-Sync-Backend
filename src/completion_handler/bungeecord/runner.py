@@ -1,6 +1,7 @@
 from ...utils import SyncLogger, cfg
 from orjson import dumps, OPT_INDENT_2
 
+
 async def bungeecord_runner() -> None:
     import time
 
@@ -75,8 +76,7 @@ async def bungeecord_runner() -> None:
     with open("data/core_info/BungeeCord.json", "wb+") as f:
         f.write(dumps(bungeecord_links, option=OPT_INDENT_2))
     SyncLogger.success("BungeeCord | All versions were loaded.")
-    elpased_time = time.perf_counter() - start
 
     SyncLogger.info(
-        f"BungeeCord | Elpased time: {elpased_time:.2f}s. (Fast load {'enabled' if cfg.get('fast_loading') else 'disabled'})"
+        f"BungeeCord | Elpased time: {time.perf_counter() - start:.2f}s. (Fast load {'enabled' if cfg.get('fast_loading') else 'disabled'})"
     )

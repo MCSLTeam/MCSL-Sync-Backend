@@ -1,3 +1,3 @@
-from .utils.logger import version
+from .utils.logger import __version__
 
-__version__ = version
+__version__ = __version__

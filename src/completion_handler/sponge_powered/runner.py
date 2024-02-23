@@ -11,8 +11,6 @@ async def sponge_powered_runner() -> None:
     await project_list.load_self()
     await project_list.load_all_projects()
 
-    elpased_time = time.perf_counter() - start
-
     SyncLogger.info(
-        f"SpongePowered | Elpased time: {elpased_time:.2f}s. (Fast load {'enabled' if cfg.get('fast_loading') else 'disabled'})"
+        f"SpongePowered | Elpased time: {time.perf_counter() - start:.2f}s. (Fast load {'enabled' if cfg.get('fast_loading') else 'disabled'})"
     )

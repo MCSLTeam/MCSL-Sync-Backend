@@ -1,1 +1,1 @@
-from .runner import bungeecord_runner
+from .runner import bungeecord_runner  # noqa: F401
