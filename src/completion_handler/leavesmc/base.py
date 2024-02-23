@@ -23,6 +23,9 @@ class LeavesLoader(object):
             )
         )  # type: dict
 
+        SyncLogger.info(
+            "Leaves | Getting project info..."
+        )
         self.project_name = tmp_data.get("project_name", None)
         self.version_groups = tmp_data.get("version_groups", None)
         self.version_label_list = tmp_data.get("versions", None)
@@ -38,9 +41,9 @@ class LeavesLoader(object):
                 )
             )
             return self.load_self(retry=(retry + 1))
-        await self.load_version_list()
+        await self.load_versions()
 
-    async def load_version_list(self) -> None:
+    async def load_versions(self) -> None:
         if not cfg.get("fast_loading"):
             tasks = []
             for version in self.version_label_list:
@@ -74,11 +77,11 @@ class LeavesLoader(object):
             )
             SyncLogger.error("".join(format_exception(e)))
         self.versions.append(sv)
-        # SyncLogger.success(
-        #     "{project_name} | {version} | All builds were loaded.".format(
-        #         project_name=self.project_name, version=version
-        #     )
-        # )
+        SyncLogger.success(
+            "{project_name} | {version} | All builds were loaded.".format(
+                project_name=self.project_name, version=version
+            )
+        )
 
     async def gather_project(self) -> dict:
         return {version.version: [await version.gather_version()] for version in self.versions}

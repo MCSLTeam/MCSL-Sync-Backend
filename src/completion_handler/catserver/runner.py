@@ -12,5 +12,5 @@ async def catserver_runner() -> None:
     elpased_time = time.perf_counter() - start
 
     SyncLogger.info(
-        f"CatServer | Elpased time: {elpased_time:.2f}s. (Force-Fast-Loading {'enabled' if cfg.get('fast_loading') else 'disabled'})"
+        f"CatServer | Elpased time: {elpased_time:.2f}s. (Fast load {'enabled' if cfg.get('fast_loading') else 'disabled'})"
     )

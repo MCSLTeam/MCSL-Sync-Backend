@@ -12,7 +12,6 @@ class PufferfishCISerializer(JenkinsCISerializer):
         await self.serialize_project_name(await self.get_jobs())
 
     async def serialize_project_name(self, tmp_job_list: list[str]) -> None:
-        # print(self.job_list)
         for job in tmp_job_list:
             if "-Purpur-" in job["name"]:
                 continue
@@ -65,7 +64,6 @@ class PufferfishCISerializer(JenkinsCISerializer):
                 continue
             else:
                 for artifact in single_data["artifacts"]:
-                    print(single_data)
                     self.job_data[job["name"]][
                         str(artifact["fileName"].split("-")[1])
                     ].append(
