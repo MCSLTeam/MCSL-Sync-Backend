@@ -77,7 +77,7 @@ class PufferfishCISerializer(JenkinsCISerializer):
                             .split("-")[1]
                         )
                     ].append(
-                        k := {
+                        {
                             "sync_time": strftime(
                                 "%Y-%m-%d %H:%M:%S",
                                 localtime(int(single_data["timestamp"]) / 1000),
@@ -98,5 +98,4 @@ class PufferfishCISerializer(JenkinsCISerializer):
                             "core_version": str("Build" + str(single_data["number"])),
                         }
                     )
-                    print(k)
         del strftime, localtime
