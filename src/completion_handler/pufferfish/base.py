@@ -57,7 +57,12 @@ class PufferfishCISerializer(JenkinsCISerializer):
             else:
                 for artifact in single_data["artifacts"]:
                     self.job_data[job["name"]][
-                        str(artifact["fileName"].split("-")[1])
+                        str(
+                            artifact["fileName"]
+                            .replace("paperclip-", "")
+                            .removesuffix(".jar")
+                            .split("-")[1]
+                        )
                     ] = []
         for single_data in tmp_data:
             if not len(single_data):
@@ -65,10 +70,18 @@ class PufferfishCISerializer(JenkinsCISerializer):
             else:
                 for artifact in single_data["artifacts"]:
                     self.job_data[job["name"]][
-                        str(artifact["fileName"].split("-")[1])
+                        str(
+                            artifact["fileName"]
+                            .replace("paperclip-", "")
+                            .removesuffix(".jar")
+                            .split("-")[1]
+                        )
                     ].append(
-                        {
-                            "sync_time": strftime("%Y-%m-%d %H:%M:%S", localtime(int(single_data["timestamp"])/1000)),
+                        k := {
+                            "sync_time": strftime(
+                                "%Y-%m-%d %H:%M:%S",
+                                localtime(int(single_data["timestamp"]) / 1000),
+                            ),
                             "download_url": str(
                                 job["url"]
                                 + str(single_data["number"])
@@ -79,9 +92,11 @@ class PufferfishCISerializer(JenkinsCISerializer):
                             "mc_version": str(
                                 artifact["fileName"]
                                 .replace("paperclip-", "")
+                                .removesuffix(".jar")
                                 .split("-")[1]
                             ),
                             "core_version": str("Build" + str(single_data["number"])),
                         }
                     )
+                    print(k)
         del strftime, localtime
