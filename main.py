@@ -8,6 +8,7 @@ from src.completion_handler import (
     bungeecord_runner,
     pufferfish_runner,
     mohistmc_runner,
+    getbukkit_runner,
 )
 from src.utils import cfg, SyncLogger, init_settings
 from src import __version__
@@ -18,34 +19,30 @@ ArclightPowered
 ├─Arclight
 ├─Lightfall
 └─Lightfall Client
-
 MohistMC
 ├─Banner
 └─Mohist
-
 SpigotMC
+├─Spigot
 └─BungeeCord
-
-CatServer
-
 LeavesMC
 └─Leaves
-
 Pufferfish
 ├─Pufferfish
 ├─Pufferfish+
 └─Pufferfish+ (Purpur)
-
 SpongePowered
 ├─SpongeForge
 └─SpongeVanilla
-
 PaperMC
 ├─Paper
 ├─Folia
 ├─Travertine
 ├─Velocity
 └─Waterfall
+CatServer
+CraftBukit
+Vanilla
 """
 
 
@@ -58,6 +55,7 @@ async def update_default():
         bungeecord_runner,
         pufferfish_runner,
         mohistmc_runner,
+        getbukkit_runner,
     ]
     if cfg.get("fast_loading"):
         tasks = [asyncio.create_task(coroutine()) for coroutine in coroutine_list]

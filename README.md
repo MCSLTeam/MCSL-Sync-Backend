@@ -22,13 +22,13 @@ A tool for synchronizing Minecraft server core files.
 - Travertine
 - Velocity
 - Waterfall
+- CraftBukkit
+- Spigot
+- Vanilla
 
 ## WIP
 
-- CraftBukkit
-- Spigot
 - Purpur
-- Vanilla
 - Forge
 - Fabric
 - NukkitX
