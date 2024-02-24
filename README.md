@@ -28,7 +28,6 @@ A tool for synchronizing Minecraft server core files.
 
 ## WIP
 
-- Purpur
 - Forge
 - Fabric
 - NukkitX

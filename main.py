@@ -41,6 +41,8 @@ PaperMC
 ├─Travertine
 ├─Velocity
 └─Waterfall
+PurpurMC
+└─Purpur
 CatServer
 CraftBukit
 Vanilla"""
