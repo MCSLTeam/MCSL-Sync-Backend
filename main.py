@@ -9,6 +9,7 @@ from src.completion_handler import (
     pufferfish_runner,
     mohistmc_runner,
     getbukkit_runner,
+    purpurmc_runner,
 )
 from src.utils import cfg, SyncLogger, init_settings
 from src import __version__
@@ -42,12 +43,12 @@ PaperMC
 └─Waterfall
 CatServer
 CraftBukit
-Vanilla
-"""
+Vanilla"""
 
 
 async def update_default():
     coroutine_list = [
+        leavesmc_runner,
         papermc_runner,
         arclight_powered_runner,
         catserver_runner,
@@ -56,6 +57,7 @@ async def update_default():
         pufferfish_runner,
         mohistmc_runner,
         getbukkit_runner,
+        purpurmc_runner,
     ]
     if cfg.get("fast_loading"):
         tasks = [asyncio.create_task(coroutine()) for coroutine in coroutine_list]
@@ -64,13 +66,6 @@ async def update_default():
     else:
         for coroutine in coroutine_list:
             await coroutine()
-
-
-async def update_leavesmc():
-    if cfg.get("fast_loading"):
-        await asyncio.create_task(leavesmc_runner())
-    else:
-        await leavesmc_runner()
 
 
 if __name__ == "__main__":
@@ -98,13 +93,6 @@ if __name__ == "__main__":
         action="store_true",
         default=False,
     )
-    parser.add_argument(
-        "--update-leaves",
-        "-ul",
-        help="Update LeavesMC core list",
-        action="store_true",
-        default=False,
-    )
     args = parser.parse_args()
 
     if not any(value for key, value in args.__dict__.items()):
@@ -114,13 +102,8 @@ if __name__ == "__main__":
     if args.version:
         print(__version__)
     if args.core_list:
-        print(available_core)
+        SyncLogger.success(available_core)
     if args.update_default:
         asyncio.run(update_default())
-    if args.update_leaves:
-        SyncLogger.warning(
-            "GFW causes the API of LeavesMC to be unstable. Please wait patiently."
-        )
-        asyncio.run(update_leavesmc())
 
     sys.exit(0)

@@ -7,3 +7,4 @@ from .bungeecord import bungeecord_runner  # noqa: F401
 from .pufferfish import pufferfish_runner  # noqa: F401
 from .mohistmc import mohistmc_runner  # noqa: F401
 from .getbukkit import getbukkit_runner  # noqa: F401
+from .purpurmc import purpurmc_runner  # noqa: F401
