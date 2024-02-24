@@ -23,6 +23,16 @@ A tool for synchronizing Minecraft server core files.
 - Velocity
 - Waterfall
 
+## WIP
+
+- CraftBukkit
+- Spigot
+- Purpur
+- Vanilla
+- Forge
+- Fabric
+- NukkitX
+
 ## Command Usage
 
 ```bash
