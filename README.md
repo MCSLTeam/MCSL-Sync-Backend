@@ -25,6 +25,7 @@ A tool for synchronizing Minecraft server core files.
 - CraftBukkit
 - Spigot
 - Vanilla
+- Purpur
 
 ## WIP
 
