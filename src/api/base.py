@@ -1,5 +1,5 @@
 from fastapi import FastAPI, status
-from enum import Enum
+# from enum import Enum
 import uvicorn
 from .model import gen_response
 from ..utils import __version__, cfg
@@ -29,7 +29,7 @@ def start_api_server():
 
 
 @sync_api.get("/")
-def base_dir():
+async def base_dir():
     return gen_response(
         status_code=status.HTTP_200_OK,
         msg=f"MCSL-Sync v{__version__} on FastAPI!",
@@ -37,7 +37,7 @@ def base_dir():
 
 
 @sync_api.get("/public/statistics")
-def get_app_info():
+async def get_app_info():
     return gen_response(
         data={
             "name": "MCSL-Sync",
@@ -51,7 +51,7 @@ def get_app_info():
 
 
 @sync_api.get("/public/availables")
-def get_available_core_list():
+async def get_available_core_list():
     from ..utils import available_downloads
 
     resp = gen_response(
