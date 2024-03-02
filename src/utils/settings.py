@@ -19,4 +19,5 @@ def init_settings():
     else:
         pass
     with open(file="data/settings.json", mode="r", encoding="utf-8") as f:
+        global cfg
         cfg = loads(f.read())
