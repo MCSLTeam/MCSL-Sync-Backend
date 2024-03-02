@@ -2,11 +2,18 @@ from orjson import loads, dumps, OPT_INDENT_2
 from os import path as osp, makedirs
 from .logger import SyncLogger
 
-config_template = {"fast_loading": True, "debug": True}
+config_template = {
+    "fast_loading": True,
+    "url": "127.0.0.1",
+    "port": 4523,
+    "ssl_cert_path": "",
+    "ssl_key_path": "",
+}
 cfg = config_template.copy()  # type: dict
 makedirs("data", exist_ok=True)
 makedirs("logs", exist_ok=True)
 makedirs("data/core_info", exist_ok=True)
+
 
 def init_settings():
     SyncLogger.info("Reading settings...")

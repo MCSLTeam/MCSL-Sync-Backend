@@ -11,8 +11,9 @@ from src.handler import (
     getbukkit_runner,
     purpurmc_runner,
 )
-from src.utils import cfg, SyncLogger, init_settings
+from src.utils import cfg, SyncLogger, init_settings, argument_parser
 from src import __version__
+from src.api import start_api_server
 import sys
 
 available_core = """
@@ -71,36 +72,15 @@ async def update_default():
 
 
 if __name__ == "__main__":
-    import argparse
+    args = argument_parser.parse_args()
 
-    parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
-    parser.add_argument(
-        "--version",
-        "-v",
-        help="Show version of MCSL-Sync",
-        action="store_true",
-        default=False,
-    )
-    parser.add_argument(
-        "--core-list",
-        "-cl",
-        help="Show available core list",
-        action="store_true",
-        default=False,
-    )
-    parser.add_argument(
-        "--update-default",
-        "-ud",
-        help="Update default core list",
-        action="store_true",
-        default=False,
-    )
-    args = parser.parse_args()
+    if not any(value for _, value in args.__dict__.items()):
+        argument_parser.error("No argument was specified.")
 
-    if not any(value for key, value in args.__dict__.items()):
-        parser.error("No argument was specified.")
-
-    init_settings()
+    if args.init:
+        init_settings()
+    if args.server:
+        start_api_server()
     if args.version:
         print(__version__)
     if args.core_list:
