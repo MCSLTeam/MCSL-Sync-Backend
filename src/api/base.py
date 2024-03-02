@@ -1,7 +1,6 @@
 from fastapi import FastAPI, status
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.requests import Request as StarletteRequest
-from traceback import format_exception
 
 # from enum import Enum
 import uvicorn
