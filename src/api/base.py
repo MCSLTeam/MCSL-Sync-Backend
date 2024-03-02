@@ -1,10 +1,29 @@
 from fastapi import FastAPI, status
+from starlette.exceptions import HTTPException as StarletteHTTPException
+from starlette.requests import Request as StarletteRequest
+from traceback import format_exception
+
 # from enum import Enum
 import uvicorn
 from .model import gen_response
 from ..utils import __version__, cfg
 
 sync_api = FastAPI()
+
+
+@sync_api.exception_handler(StarletteHTTPException)
+async def exception_handler(request: StarletteRequest, exc: StarletteHTTPException):
+    return gen_response(
+        data={
+            "request": {
+                "method": request.method,
+                "path": request.url.path,
+            },
+            "exception": str(exc),
+        },
+        status_code=exc.status_code,
+        msg=str(exc.detail),
+    )
 
 
 def start_api_server():
