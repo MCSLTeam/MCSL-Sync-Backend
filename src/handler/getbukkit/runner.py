@@ -1,4 +1,5 @@
-from ...utils import SyncLogger, cfg, GetBukkitParser
+from ...utils import SyncLogger, cfg
+from .base import GetBukkitParser
 from asyncio import create_task
 
 

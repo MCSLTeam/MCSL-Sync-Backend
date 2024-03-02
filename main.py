@@ -1,5 +1,5 @@
 import asyncio
-from src.completion_handler import (
+from src.handler import (
     leavesmc_runner,
     papermc_runner,
     arclight_powered_runner,

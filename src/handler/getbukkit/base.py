@@ -1,8 +1,8 @@
 from datetime import datetime
 from lxml import html
-from .network import get_text
+from ...utils.network import get_text
 from orjson import dumps, OPT_INDENT_2
-from .logger import SyncLogger
+from ...utils.logger import SyncLogger
 
 
 class GetBukkitParser:
