@@ -175,9 +175,14 @@ class SingleBuild(object):
         self.name = name
         self.version: str = version
         self.build: str = build_info["build"]
-        self.time: str = strftime(
-            "%Y-%m-%d %H:%M:%S",
-            localtime(int(build_info["timestamp"]) / 1000),
+        self.time: str = (
+            str(
+                strftime(
+                    "%Y-%m-%d %H:%M:%S",
+                    localtime(int(build_info["timestamp"]) / 1000),
+                )
+            ).replace(" ", "T")
+            + "Z"
         )
         self.download_url = (
             "https://api.purpurmc.org/v2/{project}/{version}/{build}/download".format(

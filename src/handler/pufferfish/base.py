@@ -78,10 +78,13 @@ class PufferfishCISerializer(JenkinsCISerializer):
                         )
                     ].append(
                         {
-                            "sync_time": strftime(
-                                "%Y-%m-%d %H:%M:%S",
-                                localtime(int(single_data["timestamp"]) / 1000),
-                            ),
+                            "sync_time": str(
+                                strftime(
+                                    "%Y-%m-%d %H:%M:%S",
+                                    localtime(int(single_data["timestamp"]) / 1000),
+                                )
+                            ).replace(" ", "T")
+                            + "Z",
                             "download_url": str(
                                 job["url"]
                                 + str(single_data["number"])

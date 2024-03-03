@@ -10,5 +10,5 @@ async def leavesmc_runner() -> None:
     await LeavesLoader().load_self()
 
     SyncLogger.info(
-        f"PaperMC | Elpased time: {time.perf_counter() - start:.2f}s. (Fast load {'enabled' if cfg.get('fast_loading') else 'disabled'})"
+        f"LeavesMC | Elpased time: {time.perf_counter() - start:.2f}s. (Fast load {'enabled' if cfg.get('fast_loading') else 'disabled'})"
     )

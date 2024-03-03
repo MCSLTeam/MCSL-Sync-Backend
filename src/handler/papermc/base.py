@@ -205,7 +205,7 @@ class SingleBuild(object):
 
     async def gather_single_build(self) -> dict[str, str]:
         return {
-            "sync_time": str(self.time),
+            "sync_time": str(self.time).split(".")[0] + "Z",
             "download_url": str(self.downloads),
             "core_type": self.name,
             "mc_version": str(self.version),

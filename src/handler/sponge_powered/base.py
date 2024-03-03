@@ -224,7 +224,7 @@ class BuildsManager(object):
             ):
                 tmp_list.append(
                     {
-                        "sync_time": "1970-01-01T00:00:00.000Z",
+                        "sync_time": "1970-01-01T00:00:00Z",
                         "download_url": await self.get_universal_build(
                             build_info.get("assets", None)
                         ),

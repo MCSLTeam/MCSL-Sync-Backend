@@ -10,7 +10,7 @@ async def bungeecord_runner() -> None:
     bungeecord_links = {
         "Latest": [
             {
-                "sync_time": "1970-01-01T00:00:00.000Z",
+                "sync_time": "1970-01-01T00:00:00Z",
                 "download_url": "https://ci.md-5.net/job/BungeeCord/lastSuccessfulBuild/artifact/bootstrap/target/BungeeCord.jar",
                 "core_type": "BungeeCord",
                 "mc_version": "Latest",
@@ -19,7 +19,7 @@ async def bungeecord_runner() -> None:
         ],
         "1.7.10": [
             {
-                "sync_time": "1970-01-01T00:00:00.000Z",
+                "sync_time": "1970-01-01T00:00:00Z",
                 "download_url": "https://ci.md-5.net/job/BungeeCord/1119/artifact/bootstrap/target/BungeeCord.jar",
                 "core_type": "BungeeCord",
                 "mc_version": "1.7.10",
@@ -28,7 +28,7 @@ async def bungeecord_runner() -> None:
         ],
         "1.6.4": [
             {
-                "sync_time": "1970-01-01T00:00:00.000Z",
+                "sync_time": "1970-01-01T00:00:00Z",
                 "download_url": "https://ci.md-5.net/job/BungeeCord/701/artifact/bootstrap/target/BungeeCord.jar",
                 "core_type": "BungeeCord",
                 "mc_version": "1.6.4",
@@ -37,7 +37,7 @@ async def bungeecord_runner() -> None:
         ],
         "1.6.2": [
             {
-                "sync_time": "1970-01-01T00:00:00.000Z",
+                "sync_time": "1970-01-01T00:00:00Z",
                 "download_url": "https://ci.md-5.net/job/BungeeCord/666/artifact/bootstrap/target/BungeeCord.jar",
                 "core_type": "BungeeCord",
                 "mc_version": "1.6.2",
@@ -46,7 +46,7 @@ async def bungeecord_runner() -> None:
         ],
         "1.5.2": [
             {
-                "sync_time": "1970-01-01T00:00:00.000Z",
+                "sync_time": "1970-01-01T00:00:00Z",
                 "download_url": "https://ci.md-5.net/job/BungeeCord/548/artifact/bootstrap/target/BungeeCord.jar",
                 "core_type": "BungeeCord",
                 "mc_version": "1.5.2",
@@ -55,7 +55,7 @@ async def bungeecord_runner() -> None:
         ],
         "1.5.0": [
             {
-                "sync_time": "1970-01-01T00:00:00.000Z",
+                "sync_time": "1970-01-01T00:00:00Z",
                 "download_url": "https://ci.md-5.net/job/BungeeCord/386/artifact/bootstrap/target/BungeeCord.jar",
                 "core_type": "BungeeCord",
                 "mc_version": "1.5.0",
@@ -64,7 +64,7 @@ async def bungeecord_runner() -> None:
         ],
         "1.4.7": [
             {
-                "sync_time": "1970-01-01T00:00:00.000Z",
+                "sync_time": "1970-01-01T00:00:00Z",
                 "download_url": "https://ci.md-5.net/job/BungeeCord/251/artifact/bootstrap/target/BungeeCord.jar",
                 "core_type": "BungeeCord",
                 "mc_version": "1.4.7",
