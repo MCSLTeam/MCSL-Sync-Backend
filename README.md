@@ -26,11 +26,11 @@ A tool for synchronizing Minecraft server core files.
 - Spigot
 - Vanilla
 - Purpur
+- Fabric
 
 ## WIP
 
 - Forge
-- Fabric
 - NukkitX
 
 ## Command Usage

@@ -3,7 +3,6 @@ from os import path as osp, makedirs
 from .logger import SyncLogger
 
 config_template = {
-    "fast_loading": True,
     "url": "127.0.0.1",
     "port": 4523,
     "ssl_cert_path": "",

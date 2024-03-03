@@ -1,4 +1,4 @@
-from ...utils import SyncLogger, cfg
+from ...utils import SyncLogger
 from orjson import dumps, OPT_INDENT_2
 
 
@@ -78,5 +78,5 @@ async def bungeecord_runner() -> None:
     SyncLogger.success("BungeeCord | All versions were loaded.")
 
     SyncLogger.info(
-        f"BungeeCord | Elpased time: {time.perf_counter() - start:.2f}s. (Fast load {'enabled' if cfg.get('fast_loading') else 'disabled'})"
+        f"BungeeCord | Elpased time: {time.perf_counter() - start:.2f}s."
     )

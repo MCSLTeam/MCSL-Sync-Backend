@@ -1,4 +1,4 @@
-from ...utils import JenkinsCISerializer, cfg, SyncLogger
+from ...utils import JenkinsCISerializer, SyncLogger
 from asyncio import create_task
 
 
@@ -33,16 +33,12 @@ class PufferfishCISerializer(JenkinsCISerializer):
                 continue
 
     async def load_versions(self) -> None:
-        if not cfg.get("fast_loading"):
-            for job in self.job_list:
-                await self.load_single_version(job)
-        else:
-            tasks = [
-                create_task(self.load_single_version(job)) for job in self.job_list
-            ]
-            for task in tasks:
-                await task
-            del tasks
+        tasks = [
+            create_task(self.load_single_version(job)) for job in self.job_list
+        ]
+        for task in tasks:
+            await task
+        del tasks
 
     @SyncLogger.catch
     async def load_single_version(self, job: str) -> list[dict[str, str]]:

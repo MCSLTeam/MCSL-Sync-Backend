@@ -1,5 +1,5 @@
 from .base import CatServerReleaseSerializer
-from ...utils import SyncLogger, cfg
+from ...utils import SyncLogger
 
 
 async def catserver_runner() -> None:
@@ -10,5 +10,5 @@ async def catserver_runner() -> None:
     await CatServerReleaseSerializer().get_assets()
 
     SyncLogger.info(
-        f"CatServer | Elpased time: {time.perf_counter() - start:.2f}s. (Fast load {'enabled' if cfg.get('fast_loading') else 'disabled'})"
+        f"CatServer | Elpased time: {time.perf_counter() - start:.2f}s."
     )

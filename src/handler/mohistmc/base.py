@@ -1,4 +1,4 @@
-from ...utils import get_json, SyncLogger, cfg
+from ...utils import get_json, SyncLogger
 from traceback import format_exception
 from asyncio import create_task
 from orjson import dumps, OPT_INDENT_2
@@ -21,17 +21,13 @@ class _ProjectList(object):
         # fmt: on
 
     async def load_all_projects(self) -> None:
-        if not cfg.get("fast_loading"):
-            for project in self.project_id_list:
-                await self.load_single_project(project_id=project["project"])
-        else:
-            tasks = [
-                create_task(self.load_single_project(project_id=project["project"]))
-                for project in self.project_id_list
-            ]
-            for task in tasks:
-                await task
-            del tasks
+        tasks = [
+            create_task(self.load_single_project(project_id=project["project"]))
+            for project in self.project_id_list
+        ]
+        for task in tasks:
+            await task
+        del tasks
 
     async def load_single_project(self, project_id: str) -> None:
         try:
@@ -80,21 +76,13 @@ class Project(object):
         await self.load_version_list()
 
     async def load_version_list(self) -> None:
-        if not cfg.get("fast_loading"):
-            tasks = []
-            for version in self.version_label_list:
-                tasks.append(create_task(self.load_single_version(version=version)))
-            for task in tasks:
-                await task
-            del tasks
-        else:
-            tasks = [
-                create_task(self.load_single_version(version=version))
-                for version in self.version_label_list
-            ]
-            for task in tasks:
-                await task
-            del tasks
+        tasks = [
+            create_task(self.load_single_version(version=version))
+            for version in self.version_label_list
+        ]
+        for task in tasks:
+            await task
+        del tasks
         with open(
             f"data/core_info/{self.project_name}.json",
             "wb+",

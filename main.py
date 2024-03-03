@@ -10,8 +10,9 @@ from src.handler import (
     mohistmc_runner,
     getbukkit_runner,
     purpurmc_runner,
+    fabric_runner,
 )
-from src.utils import cfg, SyncLogger, init_settings, argument_parser
+from src.utils import SyncLogger, init_settings, argument_parser
 from src import __version__
 from src.api import start_api_server
 import sys
@@ -46,7 +47,8 @@ PurpurMC
 └─Purpur
 CatServer
 CraftBukit
-Vanilla"""
+Vanilla
+Fabric"""
 
 
 async def update_default():
@@ -61,14 +63,10 @@ async def update_default():
         mohistmc_runner,
         getbukkit_runner,
         purpurmc_runner,
+        fabric_runner,
     ]
-    if cfg.get("fast_loading"):
-        tasks = [asyncio.create_task(coroutine()) for coroutine in coroutine_list]
-        for task in tasks:
-            await task
-    else:
-        for coroutine in coroutine_list:
-            await coroutine()
+    for coroutine in coroutine_list:
+        await coroutine()
 
 
 if __name__ == "__main__":
