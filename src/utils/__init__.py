@@ -31,4 +31,6 @@ available_downloads = [
     "CatServer",
     "CraftBukkit",
     "Vanilla",
+    "Fabric",
+    "Forge",
 ]

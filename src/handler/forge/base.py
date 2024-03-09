@@ -26,10 +26,10 @@ class ForgeLoader:
             f"https://bmclapi2.bangbang93.com/forge/minecraft/{mc_version}"
         )
         self.total_info[mc_version] = []
-        self.total_info[mc_version] = [await create_task(self.serailize_single_build(build)) for build in tmp_info]
+        self.total_info[mc_version] = [await create_task(self.serialize_single_build(build)) for build in tmp_info]
         del tmp_info
 
-    async def serailize_single_build(self, single_info: dict):
+    async def serialize_single_build(self, single_info: dict):
         return {
             "sync_time": single_info["modified"][:-5] + "Z",
             "download_url": f"https://bmclapi2.bangbang93.com/maven/net/minecraftforge/forge/{single_info['mcversion']}-{single_info['version']}/forge-{single_info['mcversion']}-{single_info['version']}-installer.jar",
