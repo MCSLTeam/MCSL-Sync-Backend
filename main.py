@@ -11,6 +11,7 @@ from src.handler import (
     getbukkit_runner,
     purpurmc_runner,
     fabric_runner,
+    forge_runner
 )
 from src.utils import SyncLogger, init_settings, argument_parser
 from src import __version__
@@ -48,22 +49,24 @@ PurpurMC
 CatServer
 CraftBukit
 Vanilla
-Fabric"""
+Fabric
+Forge"""
 
 
 async def update_default():
     coroutine_list = [
-        leavesmc_runner,
-        papermc_runner,
-        arclight_powered_runner,
-        catserver_runner,
-        sponge_powered_runner,
-        bungeecord_runner,
-        pufferfish_runner,
-        mohistmc_runner,
-        getbukkit_runner,
-        purpurmc_runner,
-        fabric_runner,
+        # leavesmc_runner,
+        # papermc_runner,
+        # arclight_powered_runner,
+        # catserver_runner,
+        # sponge_powered_runner,
+        # bungeecord_runner,
+        # pufferfish_runner,
+        # mohistmc_runner,
+        # getbukkit_runner,
+        # purpurmc_runner,
+        # fabric_runner,
+        forge_runner
     ]
     for coroutine in coroutine_list:
         await coroutine()

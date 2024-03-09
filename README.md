@@ -27,10 +27,10 @@ A tool for synchronizing Minecraft server core files.
 - Vanilla
 - Purpur
 - Fabric
+- Forge
 
 ## WIP
 
-- Forge
 - NukkitX
 
 ## Command Usage
