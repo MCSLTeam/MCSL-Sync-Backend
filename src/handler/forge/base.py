@@ -1,4 +1,4 @@
-from ...utils import get_json, SyncLogger
+from ...utils import get_json
 from asyncio import create_task
 from orjson import dumps, OPT_INDENT_2
 
@@ -27,8 +27,6 @@ class ForgeLoader:
         )
         self.total_info[mc_version] = []
         self.total_info[mc_version] = [await create_task(self.serailize_single_build(build)) for build in tmp_info]
-        # for task in self.total_info[mc_version]:
-        #     await task
         del tmp_info
 
     async def serailize_single_build(self, single_info: dict):
