@@ -54,22 +54,22 @@ Forge"""
 
 
 async def update_default():
-    coroutine_list = [
-        papermc_runner,
-        arclight_powered_runner,
-        catserver_runner,
-        leavesmc_runner,
-        sponge_powered_runner,
-        bungeecord_runner,
-        pufferfish_runner,
-        mohistmc_runner,
-        getbukkit_runner,
-        purpurmc_runner,
-        fabric_runner,
-        forge_runner,
+    tasks = [
+        asyncio.create_task(papermc_runner()),
+        asyncio.create_task(arclight_powered_runner()),
+        asyncio.create_task(catserver_runner()),
+        asyncio.create_task(sponge_powered_runner()),
+        asyncio.create_task(bungeecord_runner()),
+        asyncio.create_task(pufferfish_runner()),
+        asyncio.create_task(mohistmc_runner()),
+        asyncio.create_task(getbukkit_runner()),
+        asyncio.create_task(purpurmc_runner()),
+        asyncio.create_task(fabric_runner()),
+        asyncio.create_task(forge_runner()),
+        asyncio.create_task(leavesmc_runner()),
     ]
-    for coroutine in coroutine_list:
-        await coroutine()
+    for task in tasks:
+        await task
 
 
 if __name__ == "__main__":
