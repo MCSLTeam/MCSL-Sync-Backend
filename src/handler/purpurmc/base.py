@@ -108,7 +108,7 @@ class Project(object):
 
     async def gather_project(self) -> dict:
         return {
-            version.version: await version.gather_version() for version in self.versions
+            version.version: [await version.gather_version()] for version in self.versions
         }
 
 
