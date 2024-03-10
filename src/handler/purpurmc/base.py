@@ -108,7 +108,8 @@ class Project(object):
 
     async def gather_project(self) -> dict:
         return {
-            version.version: [await version.gather_version()] for version in self.versions
+            version.version: await version.gather_version()
+            for version in self.versions
         }
 
 
@@ -183,7 +184,7 @@ class SingleBuild(object):
             "download_url": str(self.download_url),
             "core_type": self.name,
             "mc_version": str(self.version),
-            "core_version": str(self.build),
+            "core_version": "build" + str(self.build),
         }
 
 

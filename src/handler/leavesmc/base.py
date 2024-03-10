@@ -69,7 +69,7 @@ class LeavesLoader(object):
         )
 
     async def gather_project(self) -> list:
-        return {version.version: [await version.gather_version()] for version in self.versions}
+        return {version.version: await version.gather_version() for version in self.versions}
 
 
 class SingleVersion(object):
@@ -169,7 +169,7 @@ class SingleBuild(object):
             "download_url": str(self.downloads),
             "core_type": self.name,
             "mc_version": str(self.version),
-            "core_version": str(self.build),
+            "core_version": "build" + str(self.build),
         }
 
 
