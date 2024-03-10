@@ -55,9 +55,7 @@ class Project(object):
 
     async def load_self(self, retry: int = 0) -> None:
         if retry:
-            SyncLogger.warning(
-                "{project_id} | Retrying getting project info..."
-            )
+            SyncLogger.warning("{project_id} | Retrying getting project info...")
         tmp_data = await get_json(
             "https://api.papermc.io/v2/projects/{project_id}/".format(
                 project_id=self.project_id
@@ -105,8 +103,7 @@ class Project(object):
 
     async def gather_project(self) -> dict:
         return {
-            version.version: await version.gather_version()
-            for version in self.versions
+            version.version: await version.gather_version() for version in self.versions
         }
 
 
@@ -194,7 +191,7 @@ class SingleBuild(object):
             "download_url": str(self.downloads),
             "core_type": self.name,
             "mc_version": str(self.version),
-            "core_version": str(self.build),
+            "core_version": "build" + str(self.build),
         }
 
 

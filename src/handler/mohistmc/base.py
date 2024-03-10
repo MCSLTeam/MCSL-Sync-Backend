@@ -151,7 +151,7 @@ class SingleBuild(object):
     def __init__(self, name: str, version: str, build_info: dict) -> None:
         self.name = name
         self.version: str = version
-        self.build: int = "Build" + str(build_info["number"])
+        self.build: int = "build" + str(build_info["number"])
         self.time: int = strftime(
             "%Y-%m-%d %H:%M:%S", localtime(int(build_info["createdAt"]) / 1000)
         )

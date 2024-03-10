@@ -94,7 +94,7 @@ class PufferfishCISerializer(JenkinsCISerializer):
                                 .removesuffix(".jar")
                                 .split("-")[1]
                             ),
-                            "core_version": str("Build" + str(single_data["number"])),
+                            "core_version": str("build" + str(single_data["number"])),
                         }
                     )
         del strftime, localtime
