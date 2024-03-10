@@ -13,18 +13,14 @@ class LeavesLoader(object):
 
     async def load_self(self, retry: int = 0) -> None:
         if retry:
-            SyncLogger.warning(
-                "Leaves | Retrying getting project info..."
-            )
+            SyncLogger.warning("Leaves | Retrying getting project info...")
         tmp_data = await get_json(
             "https://api.leavesmc.top/v2/projects/{project_id}/".format(
                 project_id=self.project_id
             )
         )  # type: dict
 
-        SyncLogger.info(
-            "Leaves | Getting project info..."
-        )
+        SyncLogger.info("Leaves | Getting project info...")
         self.project_name = tmp_data.get("project_name", None)
         self.version_groups = tmp_data.get("version_groups", None)
         self.version_label_list = tmp_data.get("versions", None)
@@ -72,8 +68,11 @@ class LeavesLoader(object):
             )
         )
 
-    async def gather_project(self) -> dict:
-        return {version.version: [await version.gather_version()] for version in self.versions}
+    async def gather_project(self) -> list:
+        return [
+            {version.version: [await version.gather_version()]}
+            for version in self.versions
+        ]
 
 
 class SingleVersion(object):
@@ -161,7 +160,10 @@ class SingleBuild(object):
         self.build: int = build_info["build"]
         self.time: int = build_info["time"]
         self.downloads: Downloads = Downloads(
-            data=build_info["downloads"], name=name.lower(), version=version, build=self.build
+            data=build_info["downloads"],
+            name=name.lower(),
+            version=version,
+            build=self.build,
         )
 
     async def gather_single_build(self) -> dict[str, str]:
