@@ -88,4 +88,8 @@ def update_database(
             )
             """
         )
+        cursor.execute(f"SELECT COUNT(*) FROM {mcversion}")
+        count = cursor.fetchone()[0]
+        if count == 0:
+            cursor.execute(f"DROP TABLE {mcversion}")
         database.commit()
