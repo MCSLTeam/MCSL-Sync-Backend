@@ -69,10 +69,7 @@ class LeavesLoader(object):
         )
 
     async def gather_project(self) -> list:
-        return [
-            {version.version: [await version.gather_version()]}
-            for version in self.versions
-        ]
+        return {version.version: [await version.gather_version()] for version in self.versions}
 
 
 class SingleVersion(object):

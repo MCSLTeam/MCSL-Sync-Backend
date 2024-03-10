@@ -35,7 +35,7 @@ class GetBukkitParser:
                     "download_url": await self.get_real_download_link(
                         pane.xpath('.//a[@class="btn btn-download"]/@href')[0]
                     ),
-                    "type": self.core_type.capitalize(),
+                    "core_type": self.core_type.capitalize(),
                     "mc_version": version.strip(),
                     "core_version": "Latest",
                 }

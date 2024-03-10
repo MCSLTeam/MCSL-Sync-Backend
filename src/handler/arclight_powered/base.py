@@ -12,7 +12,7 @@ class ArclightReleaseSerializer(GitHubReleaseSerializer):
             release["mc_version"], release["core_version"] = tuple(
                 release["tag_name"].split("/")
             )
-            release["core_version"] += "build"
+            release["core_version"] = "build" + release["core_version"]
             release.pop("tag_name")
             release.pop("target_commitish")
             release.pop("name")
@@ -35,7 +35,7 @@ class LightfallReleaseSerializer(GitHubReleaseSerializer):
             release["mc_version"], release["core_version"] = tuple(
                 release["tag_name"].split("-")
             )
-            release["core_version"] += "build"
+            release["core_version"] = "build" + release["core_version"]
             release.pop("tag_name")
             release.pop("target_commitish")
             release.pop("name")
@@ -57,7 +57,7 @@ class LightfallClientReleaseSerializer(GitHubReleaseSerializer):
             release["mc_version"], release["core_version"] = tuple(
                 release["tag_name"].split("-")
             )
-            release["core_version"] += "build"
+            release["core_version"] = "build" + release["core_version"]
             release.pop("tag_name")
             release.pop("target_commitish")
             release.pop("name")
