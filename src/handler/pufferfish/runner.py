@@ -1,6 +1,5 @@
 from .base import PufferfishCISerializer
-from ...utils import SyncLogger
-from orjson import dumps, OPT_INDENT_2
+from ...utils import SyncLogger, update_database
 
 
 async def pufferfish_runner() -> None:
@@ -12,10 +11,8 @@ async def pufferfish_runner() -> None:
     await serializer.load()
     await serializer.load_versions()
     for name, data in serializer.job_data.items():
-        with open(f"data/core_info/{name}.json", "wb+") as f:
-            f.write(dumps(data, option=OPT_INDENT_2))
+        for mc_version, builds in data.items():
+            update_database("runtime", name, mc_version, builds=builds)
         SyncLogger.info(f"{name} | All versions were loaded.")
 
-    SyncLogger.info(
-        f"Pufferfish | Elpased time: {time.perf_counter() - start:.2f}s."
-    )
+    SyncLogger.info(f"Pufferfish | Elpased time: {time.perf_counter() - start:.2f}s.")

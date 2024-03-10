@@ -1,8 +1,6 @@
 from datetime import datetime
 from lxml import html
-from ...utils.network import get_text
-from orjson import dumps, OPT_INDENT_2
-from ...utils.logger import SyncLogger
+from ...utils import SyncLogger, get_text, update_database
 
 
 class GetBukkitParser:
@@ -50,6 +48,6 @@ class GetBukkitParser:
         )[0]
 
     async def save_data(self, data_dict: dict):
-        with open(f"data/core_info/{self.core_type.capitalize()}.json", "wb+") as f:
-            f.write(dumps(data_dict, option=OPT_INDENT_2))
+        for mc_version, builds in data_dict.items():
+            update_database("runtime", self.core_type.capitalize(), mc_version, builds=builds)
         SyncLogger.success(f"{self.core_type.capitalize()} | All versions were loaded.")

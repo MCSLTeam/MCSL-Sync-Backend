@@ -1,9 +1,9 @@
 import asyncio
 from src.handler import (
-    leavesmc_runner,
     papermc_runner,
     arclight_powered_runner,
     catserver_runner,
+    leavesmc_runner,
     sponge_powered_runner,
     bungeecord_runner,
     pufferfish_runner,
@@ -11,11 +11,11 @@ from src.handler import (
     getbukkit_runner,
     purpurmc_runner,
     fabric_runner,
-    forge_runner
+    forge_runner,
 )
 from src.utils import SyncLogger, init_settings, argument_parser
 from src import __version__
-from src.api import start_api_server
+from src.api import start_production_server
 import sys
 
 available_core = """
@@ -55,18 +55,18 @@ Forge"""
 
 async def update_default():
     coroutine_list = [
-        # leavesmc_runner,
-        # papermc_runner,
-        # arclight_powered_runner,
-        # catserver_runner,
-        # sponge_powered_runner,
-        # bungeecord_runner,
-        # pufferfish_runner,
-        # mohistmc_runner,
-        # getbukkit_runner,
-        # purpurmc_runner,
-        # fabric_runner,
-        forge_runner
+        papermc_runner,
+        arclight_powered_runner,
+        catserver_runner,
+        leavesmc_runner,
+        sponge_powered_runner,
+        bungeecord_runner,
+        pufferfish_runner,
+        mohistmc_runner,
+        getbukkit_runner,
+        purpurmc_runner,
+        fabric_runner,
+        forge_runner,
     ]
     for coroutine in coroutine_list:
         await coroutine()
@@ -81,12 +81,12 @@ if __name__ == "__main__":
     if args.init:
         init_settings()
     if args.server:
-        start_api_server()
+        start_production_server()
     if args.version:
         print(__version__)
     if args.core_list:
         SyncLogger.success(available_core)
-    if args.update_default:
+    if args.update:
         asyncio.run(update_default())
 
     sys.exit(0)

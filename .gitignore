@@ -12,4 +12,3 @@ logs/**
 data/*
 deps/*
 .ruff_cache/**
-src/utils/database.py

@@ -1,7 +1,6 @@
-from ...utils import get_json, SyncLogger
+from ...utils import get_json, SyncLogger, update_database
 from traceback import format_exception
 from asyncio import create_task
-from orjson import dumps, OPT_INDENT_2
 from time import strftime, localtime
 
 
@@ -83,11 +82,9 @@ class Project(object):
         for task in tasks:
             await task
         del tasks
-        with open(
-            f"data/core_info/{self.project_name}.json",
-            "wb+",
-        ) as f:
-            f.write(dumps(await self.gather_project(), option=OPT_INDENT_2))
+        dict_info = await self.gather_project()
+        for mc_version, builds in dict_info.items():
+            update_database("runtime", self.project_name, mc_version, builds=builds)
 
     async def load_single_version(self, version: str) -> None:
         sv = SingleVersion(

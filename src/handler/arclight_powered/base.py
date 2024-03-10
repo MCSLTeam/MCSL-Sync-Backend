@@ -1,6 +1,4 @@
-from ...utils import GitHubReleaseSerializer, SyncLogger
-
-from orjson import dumps, OPT_INDENT_2
+from ...utils import GitHubReleaseSerializer, SyncLogger, update_database
 
 
 class ArclightReleaseSerializer(GitHubReleaseSerializer):
@@ -19,8 +17,9 @@ class ArclightReleaseSerializer(GitHubReleaseSerializer):
             release.pop("name")
 
         arclight_res = await self.sort_by_mc_versions()
-        with open("data/core_info/Arclight.json", "wb+") as f:
-            f.write(dumps(arclight_res, option=OPT_INDENT_2))
+
+        for mc_version, builds in arclight_res.items():
+            update_database("runtime", "Arclight", mc_version, builds=builds)
         SyncLogger.success("Arclight | All versions were loaded.")
 
 
@@ -40,8 +39,8 @@ class LightfallReleaseSerializer(GitHubReleaseSerializer):
             release.pop("name")
 
         lightfall_res = await self.sort_by_mc_versions()
-        with open("data/core_info/Lightfall.json", "wb+") as f:
-            f.write(dumps(lightfall_res, option=OPT_INDENT_2))
+        for mc_version, builds in lightfall_res.items():
+            update_database("runtime", "Lightfall", mc_version, builds=builds)
         SyncLogger.success("Lightfall | All versions were loaded.")
 
 
@@ -61,6 +60,6 @@ class LightfallClientReleaseSerializer(GitHubReleaseSerializer):
             release.pop("name")
 
         lightfall_client_res = await self.sort_by_mc_versions()
-        with open("data/core_info/LightfallClient.json", "wb+") as f:
-            f.write(dumps(lightfall_client_res, option=OPT_INDENT_2))
+        for mc_version, builds in lightfall_client_res.items():
+            update_database("runtime", "LightfallClient", mc_version, builds=builds)
         SyncLogger.success("LightfallClient | All versions were loaded.")

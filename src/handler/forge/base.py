@@ -1,4 +1,4 @@
-from ...utils import get_json
+from ...utils import get_json, update_database
 from asyncio import create_task
 from orjson import dumps, OPT_INDENT_2
 
@@ -18,8 +18,8 @@ class ForgeLoader:
         for task in tasks:
             await task
         del tasks, self.mc_version_list
-        with open("data/core_info/Forge.json", "wb+") as f:
-            f.write(dumps(self.total_info, option=OPT_INDENT_2))
+        for mc_version, builds in self.total_info.items():
+            update_database("runtime", "Forge", mc_version, builds=builds)
 
     async def fetch_single_mc_version(self, mc_version: str):
         tmp_info = await get_json(

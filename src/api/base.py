@@ -1,31 +1,14 @@
-from fastapi import FastAPI, status
-from starlette.exceptions import HTTPException as StarletteHTTPException
-from starlette.requests import Request as StarletteRequest
 
-# from enum import Enum
-import uvicorn
-from .model import gen_response
+from quart import Quart, request
+from werkzeug.exceptions import HTTPException
 from ..utils import __version__, cfg
 
-sync_api = FastAPI()
+import uvicorn
+from .model import gen_response
 
+sync_api = Quart(__name__)
 
-@sync_api.exception_handler(StarletteHTTPException)
-async def exception_handler(request: StarletteRequest, exc: StarletteHTTPException):
-    return gen_response(
-        data={
-            "request": {
-                "method": request.method,
-                "path": request.url.path,
-            },
-            "exception": str(exc),
-        },
-        status_code=exc.status_code,
-        msg=str(exc.detail),
-    )
-
-
-def start_api_server():
+def start_production_server():
     uvicorn.run(
         app=sync_api,
         host=cfg.get("url"),
@@ -36,45 +19,58 @@ def start_api_server():
         ssl_keyfile=cfg.get("ssl_key_path") if cfg.get("ssl_key_path") != "" else None,
     )
 
-
-# class RouterBase(Enum):
-#     def apiPath(self):
-#         return f"{self.__path__}{self.value}"
-
-
-# class APIRouter(RouterBase):
-#     __path__ = "/public"
-
-
-@sync_api.get("/")
-async def base_dir():
-    return gen_response(
-        status_code=status.HTTP_200_OK,
-        msg=f"MCSL-Sync v{__version__} on FastAPI!",
+@sync_api.errorhandler(Exception)
+async def exception_handler(exc):
+    status_code = 500
+    if isinstance(exc, HTTPException):
+        status_code = exc.code
+    return await gen_response(
+        data={
+            "request": {
+                "method": request.method,
+                "path": request.path,
+            },
+            "exception": str(exc),
+        },
+        status_code=status_code,
+        msg=str(exc),
     )
 
+@sync_api.route("/")
+async def base_dir():
+    """
+    This is using docstrings for specifications.
+    ---
+    parameters:
+        none
+    responses:
+      200:
+        description: Say hello to the user
+    """
+    return await gen_response(
+        status_code=200,
+        msg=f"MCSL-Sync v{__version__} on Quart!",
+    )
 
-@sync_api.get("/public/statistics")
+@sync_api.route("/public/statistics")
 async def get_app_info():
-    return gen_response(
+    return await gen_response(
         data={
             "name": "MCSL-Sync",
             "author": "MCSLTeam",
             "version": f"v{__version__}",
             "config": cfg,
         },
-        status_code=status.HTTP_200_OK,
+        status_code=200,
         msg="Success!",
     )
 
-
-@sync_api.get("/public/availables")
+@sync_api.route("/public/availables")
 async def get_available_core_list():
     from ..utils import available_downloads
-
-    resp = gen_response(
+    resp = await gen_response(
         data=available_downloads,
-        status_code=status.HTTP_200_OK,
+        status_code=200,
         msg="Success!",
     )
     del available_downloads

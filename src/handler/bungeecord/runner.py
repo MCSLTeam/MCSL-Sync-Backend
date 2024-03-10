@@ -1,5 +1,4 @@
-from ...utils import SyncLogger
-from orjson import dumps, OPT_INDENT_2
+from ...utils import SyncLogger, update_database
 
 
 async def bungeecord_runner() -> None:
@@ -73,8 +72,8 @@ async def bungeecord_runner() -> None:
         ],
     }
 
-    with open("data/core_info/BungeeCord.json", "wb+") as f:
-        f.write(dumps(bungeecord_links, option=OPT_INDENT_2))
+    for mc_version, builds in bungeecord_links.items():
+        update_database("runtime", "BungeeCord", mc_version, builds=builds)
     SyncLogger.success("BungeeCord | All versions were loaded.")
 
     SyncLogger.info(

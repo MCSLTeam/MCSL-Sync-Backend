@@ -3,36 +3,36 @@ import argparse
 
 argument_parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter)
 argument_parser.add_argument(
-    "--version",
     "-v",
+    "--version",
     help="Show version of MCSL-Sync",
     action="store_true",
     default=False,
 )
 argument_parser.add_argument(
-    "--core-list",
     "-cl",
+    "--core-list",
     help="Show available core list",
     action="store_true",
     default=False,
 )
 argument_parser.add_argument(
-    "--update-default",
-    "-ud",
-    help="Update default core list",
+    "-u",
+    "--update",
+    help="Update core list",
     action="store_true",
     default=False,
 )
 argument_parser.add_argument(
-    "--init",
     "-i",
+    "--init",
     help="Init MCSL-Sync configuration",
     action="store_true",
     default=False,
 )
 argument_parser.add_argument(
-    "--server",
     "-s",
+    "--server",
     help="Run MCSL-Sync API server",
     action="store_true",
     default=False,

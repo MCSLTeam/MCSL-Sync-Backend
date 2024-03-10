@@ -1,5 +1,4 @@
-from ...utils import GitHubReleaseSerializer, SyncLogger
-from orjson import dumps, OPT_INDENT_2
+from ...utils import GitHubReleaseSerializer, SyncLogger, update_database
 
 
 class CatServerReleaseSerializer(GitHubReleaseSerializer):
@@ -17,6 +16,6 @@ class CatServerReleaseSerializer(GitHubReleaseSerializer):
             release.pop("target_commitish")
 
         catserver_res = await self.sort_by_mc_versions()
-        with open("data/core_info/CatServer.json", "wb+") as f:
-            f.write(dumps(catserver_res, option=OPT_INDENT_2))
+        for mc_version, builds in catserver_res.items():
+            update_database("runtime", "CatServer", mc_version, builds=builds)
         SyncLogger.success("CatServer | All versions were loaded.")

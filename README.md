@@ -36,13 +36,13 @@ A tool for synchronizing Minecraft server core files.
 ## Command Usage
 
 ```bash
-usage: main.py [-h] [--version] [--core-list] [--update-default] [--update-leaves]
+Usage: main.py [-h] [-v] [-cl] [-u] [-i] [-s]
 
-options:
-  -h, --help            show this help message and exit
-  --version, -v         Show version of MCSL-Sync
-  --core-list, -cl      Show available core list
-  --update-default, -ud
-                        Update default core list
-  --update-leaves, -ul  Update LeavesMC core list
+Options:
+  -h, --help        show this help message and exit
+  -v, --version     Show version of MCSL-Sync
+  -cl, --core-list  Show available core list
+  -u, --update      Update core list
+  -i, --init        Init MCSL-Sync configuration
+  -s, --server      Run MCSL-Sync API server
 ```

@@ -7,30 +7,4 @@ from .settings import cfg, init_settings  # noqa: F401
 from .github_releases import GitHubReleaseSerializer  # noqa: F401
 from .jenkins import JenkinsCISerializer  # noqa: F401
 from .arg_parser import argument_parser  # noqa: F401
-
-available_downloads = [
-    "Arclight",
-    "Lightfall",
-    "LightfallClient",
-    "Banner",
-    "Mohist",
-    "Spigot",
-    "BungeeCord",
-    "Leaves",
-    "Pufferfish",
-    "PufferfishPlus",
-    "PufferfishPlusPurpur",
-    "SpongeForge",
-    "SpongeVanilla",
-    "Paper",
-    "Folia",
-    "Travertine",
-    "Velocity",
-    "Waterfall",
-    "Purpur",
-    "CatServer",
-    "CraftBukkit",
-    "Vanilla",
-    "Fabric",
-    "Forge",
-]
+from .database import available_downloads, update_database  # noqa: F401
