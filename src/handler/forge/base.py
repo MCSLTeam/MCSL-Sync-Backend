@@ -1,6 +1,5 @@
 from ...utils import get_json, update_database
 from asyncio import create_task
-from orjson import dumps, OPT_INDENT_2
 
 class ForgeLoader:
     def __init__(self):

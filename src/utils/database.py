@@ -41,10 +41,16 @@ def init_production_database():
             pass
 
 
+async def get_core_versions(database_type: str, core_type: str):
+    with sqlite3.connect(f"data/{database_type}/{core_type}.db") as core:
+        cursor = core.cursor()
+        cursor.execute("SELECT name FROM sqlite_master where type='table'")
+        version_list = [row[0] for row in cursor.fetchall()]
+        return version_list
+
+
 @SyncLogger.catch
-def update_database(
-    database_type: str, core_type: str, mcversion: str, builds: list
-):
+def update_database(database_type: str, core_type: str, mcversion: str, builds: list):
     with sqlite3.connect(f"data/{database_type}/{core_type}.db") as database:
         cursor = database.cursor()
         try:
@@ -88,8 +94,8 @@ def update_database(
             )
             """
         )
-        cursor.execute(f"SELECT COUNT(*) FROM {mcversion}")
+        cursor.execute(f"SELECT COUNT(*) FROM '{mcversion}'")
         count = cursor.fetchone()[0]
         if count == 0:
-            cursor.execute(f"DROP TABLE {mcversion}")
+            cursor.execute(f"DROP TABLE '{mcversion}'")
         database.commit()
