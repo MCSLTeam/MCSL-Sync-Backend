@@ -13,9 +13,9 @@ def start_production_server():
         app=sync_api,
         host=cfg.get("url"),
         port=cfg.get("port"),
-        ssl_certfile=cfg.get("ssl_cert_path")
-        if cfg.get("ssl_cert_path") != ""
-        else None,
+        ssl_certfile=(
+            cfg.get("ssl_cert_path") if cfg.get("ssl_cert_path") != "" else None
+        ),
         ssl_keyfile=cfg.get("ssl_key_path") if cfg.get("ssl_key_path") != "" else None,
     )
 
@@ -69,9 +69,10 @@ async def get_app_info():
     )
 
 
-@sync_api.route("/core/")
-async def get_core():
-    if not len(request.args):
+@sync_api.route("/core/<core_type>")
+@sync_api.route("/core/<core_type>/")
+async def get_core(core_type=""):
+    if not core_type:
         from ..utils import available_downloads
 
         resp = await gen_response(
@@ -82,13 +83,11 @@ async def get_core():
     else:
         from ..utils import get_core_versions
 
-        core_type = request.args["core_type"]
-        is_runtime = request.args["runtime"]
+        is_runtime = request.args.get("runtime", True)
         resp = await gen_response(
             data=await get_core_versions(
                 database_type="runtime" if is_runtime else "production",
                 core_type=core_type,
             )
         )
-        del core_type
         return resp
