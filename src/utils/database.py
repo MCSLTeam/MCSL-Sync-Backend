@@ -1,6 +1,5 @@
 import sqlite3
 from .logger import SyncLogger
-
 available_downloads = [
     "Arclight",
     "Lightfall",
@@ -44,16 +43,16 @@ def init_production_database() -> None:
 async def get_mc_versions(database_type: str, core_type: str) -> list[str]:
     with sqlite3.connect(f"data/{database_type}/{core_type}.db") as core:
         cursor = core.cursor()
-        cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
-        version_list = [row[0] for row in cursor.fetchall()]
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name")
+        version_list = sorted([row[0] for row in cursor.fetchall()], reverse=True)
         return version_list
 
 
 async def get_core_versions(database_type: str, core_type: str, mc_version: str) -> list[str]:
     with sqlite3.connect(f"data/{database_type}/{core_type}.db") as core:
         cursor = core.cursor()
-        cursor.execute(f"SELECT (core_version) FROM '{mc_version}'")
-        version_list = [row[0] for row in cursor.fetchall()]
+        cursor.execute(f"SELECT core_version FROM '{mc_version}' ORDER BY core_version")
+        version_list = sorted([row[0] for row in cursor.fetchall()], reverse=True)
         return version_list
 
 
