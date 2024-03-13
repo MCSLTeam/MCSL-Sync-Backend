@@ -56,6 +56,7 @@ async def base_dir():
 
 
 @sync_api.route("/public/statistics")
+@sync_api.route("/public/statistics/")
 async def get_app_info():
     return await gen_response(
         data={
@@ -69,9 +70,9 @@ async def get_app_info():
     )
 
 
-@sync_api.route("/core/<core_type>")
-@sync_api.route("/core/<core_type>/")
-async def get_core(core_type=""):
+@sync_api.route("/core")
+@sync_api.route("/core/")
+async def get_core(core_type: str = ""):
     if not core_type:
         from ..utils import available_downloads
 
@@ -79,15 +80,141 @@ async def get_core(core_type=""):
             data=available_downloads, status_code=200, msg="Success!"
         )
         del available_downloads
-        return resp
-    else:
-        from ..utils import get_core_versions
+    return resp
 
-        is_runtime = request.args.get("runtime", True)
-        resp = await gen_response(
-            data=await get_core_versions(
-                database_type="runtime" if is_runtime else "production",
-                core_type=core_type,
-            )
+
+@sync_api.route("/core/<core_type>")
+@sync_api.route("/core/<core_type>/")
+async def get_mc_versions(core_type: str = ""):
+    from ..utils import get_mc_versions, available_downloads
+
+    is_runtime = request.args.get("runtime", True)
+    database_type = "runtime" if is_runtime else "production"
+
+    database_data = (
+        await get_mc_versions(
+            database_type=database_type,
+            core_type=core_type,
         )
-        return resp
+        if core_type in available_downloads
+        else None
+    )
+
+    resp = await gen_response(
+        data={"type": database_type, "versions": database_data}
+        if core_type in available_downloads
+        else None,
+        status_code=200 if core_type in available_downloads else 404,
+        msg=(
+            "Success!"
+            if core_type in available_downloads
+            else "Error: No data were found."
+        ),
+    )
+    del get_mc_versions, is_runtime, database_type, database_data
+    return resp
+
+
+@sync_api.route("/core/<core_type>/<mc_version>")
+@sync_api.route("/core/<core_type>/<mc_version>/")
+async def get_core_versions(core_type: str = "", mc_version: str = ""):
+    from ..utils import get_mc_versions, get_core_versions, available_downloads
+
+    is_runtime = request.args.get("runtime", True)
+    database_type = "runtime" if is_runtime else "production"
+    versions_list = (
+        await get_mc_versions(
+            database_type=database_type,
+            core_type=core_type,
+        )
+        if core_type in available_downloads
+        else []
+    )
+    database_data = (
+        await get_core_versions(
+            database_type=database_type,
+            core_type=core_type,
+            mc_version=mc_version,
+        )
+        if mc_version in versions_list
+        else []
+    )
+    resp = await gen_response(
+        data={"type": database_type, "builds": database_data}
+        if mc_version in versions_list
+        else None,
+        status_code=200 if mc_version in versions_list else 404,
+        msg="Success!" if mc_version in versions_list else "Error: No data were found.",
+    )
+    del (
+        get_core_versions,
+        get_mc_versions,
+        is_runtime,
+        database_type,
+        database_data,
+        versions_list,
+    )
+    return resp
+
+
+@sync_api.route("/core/<core_type>/<mc_version>/<core_version>")
+@sync_api.route("/core/<core_type>/<mc_version>/<core_version>/")
+async def get_specified_core(
+    core_type: str = "", mc_version: str = "", core_version: str = ""
+):
+    from ..utils import (
+        get_mc_versions,
+        get_core_versions,
+        available_downloads,
+        get_specified_core_data,
+    )
+
+    is_runtime = request.args.get("runtime", True)
+    database_type = "runtime" if is_runtime else "production"
+    mc_versions_list = (
+        await get_mc_versions(
+            database_type=database_type,
+            core_type=core_type,
+        )
+        if core_type in available_downloads
+        else []
+    )
+    core_versions_list = (
+        await get_core_versions(
+            database_type=database_type,
+            core_type=core_type,
+            mc_version=mc_version,
+        )
+        if mc_version in mc_versions_list
+        else []
+    )
+    database_data = (
+        await get_specified_core_data(
+            database_type=database_type,
+            core_type=core_type,
+            mc_version=mc_version,
+            core_version=core_version,
+        )
+        if core_version in core_versions_list
+        else {}
+    )
+    resp = await gen_response(
+        data={"type": database_type, "build": database_data}
+        if core_version in core_versions_list
+        else None,
+        status_code=200 if core_version in core_versions_list else 404,
+        msg=(
+            "Success!"
+            if core_version in core_versions_list
+            else "Error: No data were found."
+        ),
+    )
+    del (
+        get_core_versions,
+        get_mc_versions,
+        is_runtime,
+        database_type,
+        database_data,
+        mc_versions_list,
+    )
+    return resp

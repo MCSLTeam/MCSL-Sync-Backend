@@ -29,34 +29,55 @@ available_downloads = [
 ]
 
 
-def init_pre_database():
+def init_pre_database() -> None:
     for core_type in available_downloads:
         with sqlite3.connect(f"data/runtime/{core_type}.db"):
             pass
 
 
-def init_production_database():
+def init_production_database() -> None:
     for core_type in available_downloads:
         with sqlite3.connect(f"data/production/{core_type}.db"):
             pass
 
 
-async def get_core_versions(database_type: str, core_type: str):
+async def get_mc_versions(database_type: str, core_type: str) -> list[str]:
     with sqlite3.connect(f"data/{database_type}/{core_type}.db") as core:
         cursor = core.cursor()
-        cursor.execute("SELECT name FROM sqlite_master where type='table'")
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
         version_list = [row[0] for row in cursor.fetchall()]
         return version_list
 
 
+async def get_core_versions(database_type: str, core_type: str, mc_version: str) -> list[str]:
+    with sqlite3.connect(f"data/{database_type}/{core_type}.db") as core:
+        cursor = core.cursor()
+        cursor.execute(f"SELECT (core_version) FROM '{mc_version}'")
+        version_list = [row[0] for row in cursor.fetchall()]
+        return version_list
+
+
+async def get_specified_core_data(
+    database_type: str, core_type: str, mc_version: str, core_version: str
+) -> dict[str, str]:
+    with sqlite3.connect(f"data/{database_type}/{core_type}.db") as core:
+        cursor = core.cursor()
+        cursor.execute(
+            f"SELECT * FROM '{mc_version}' WHERE core_version='{core_version}'"
+        )
+        columns = [column[0] for column in cursor.description]
+        core_data = [dict(zip(columns, row)) for row in cursor.fetchall()][0]
+        return core_data
+
+
 @SyncLogger.catch
-def update_database(database_type: str, core_type: str, mcversion: str, builds: list):
+def update_database(database_type: str, core_type: str, mc_version: str, builds: list) -> None:
     with sqlite3.connect(f"data/{database_type}/{core_type}.db") as database:
         cursor = database.cursor()
         try:
             cursor.execute(
                 f"""
-                    CREATE TABLE "{mcversion}" (
+                    CREATE TABLE "{mc_version}" (
                         sync_time TEXT,
                         download_url TEXT,
                         core_type TEXT,
@@ -70,7 +91,7 @@ def update_database(database_type: str, core_type: str, mcversion: str, builds: 
         try:
             cursor.execute(
                 f"""
-                DELETE FROM "{mcversion}"
+                DELETE FROM "{mc_version}"
                 """
             )
         except sqlite3.OperationalError:
@@ -79,23 +100,23 @@ def update_database(database_type: str, core_type: str, mcversion: str, builds: 
             for build in builds:
                 cursor.execute(
                     f"""
-                    INSERT INTO "{mcversion}" (sync_time, download_url, core_type, mc_version, core_version)
+                    INSERT INTO "{mc_version}" (sync_time, download_url, core_type, mc_version, core_version)
                     VALUES (:sync_time, :download_url, :core_type, :mc_version, :core_version)
                     """,
                     build,
                 )
         cursor.execute(
             f"""
-            DELETE FROM "{mcversion}"
+            DELETE FROM "{mc_version}"
             WHERE ROWID NOT IN (
                 SELECT MIN(ROWID)
-                FROM "{mcversion}"
+                FROM "{mc_version}"
                 GROUP BY sync_time, download_url, core_type, mc_version, core_version
             )
             """
         )
-        cursor.execute(f"SELECT COUNT(*) FROM '{mcversion}'")
+        cursor.execute(f"SELECT COUNT(*) FROM '{mc_version}'")
         count = cursor.fetchone()[0]
         if count == 0:
-            cursor.execute(f"DROP TABLE '{mcversion}'")
+            cursor.execute(f"DROP TABLE '{mc_version}'")
         database.commit()
