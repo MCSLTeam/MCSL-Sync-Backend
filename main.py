@@ -13,10 +13,11 @@ from src.handler import (
     fabric_runner,
     forge_runner,
 )
-from src.utils import SyncLogger, init_settings, argument_parser
+from src.utils import SyncLogger, init_settings, read_settings, argument_parser
 from src import __version__
 from src.api import start_production_server
 import sys
+
 
 available_core = """
 ArclightPowered
@@ -82,6 +83,7 @@ if __name__ == "__main__":
     if args.init:
         init_settings()
     if args.server:
+        read_settings()
         start_production_server()
     if args.version:
         print(__version__)

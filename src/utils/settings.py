@@ -32,6 +32,7 @@ def init_settings():
     SyncLogger.info("Initialize Production Database...")
     init_production_database()
 
-
-with open(file="data/settings.json", mode="r", encoding="utf-8") as f:
-    cfg = loads(f.read())
+def read_settings():
+    global cfg
+    with open(file="data/settings.json", mode="r", encoding="utf-8") as f:
+        cfg = loads(f.read())
