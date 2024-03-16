@@ -157,7 +157,7 @@ class SingleDownload(object):
         else:
             self.name: str = data.get("name", None)
             self.sha256: str = data.get("sha256", None)
-        self.link: str = "https://api.papermc.io/v2/projects/{name}/versions/{version}/builds/{build}/downloads/{file_name}/".format(
+        self.link: str = "https://api.papermc.io/v2/projects/{name}/versions/{version}/builds/{build}/downloads/{file_name}".format(
             name=name.lower(), version=version, build=build, file_name=self.name
         )
 
