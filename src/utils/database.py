@@ -138,7 +138,7 @@ async def optimize_core_data(database_type: str = "runtime") -> None:
             table_list = [row[0] for row in cursor.fetchall()]
             for table_name in table_list:
                 cursor.execute(
-                    f"SELECT * FROM '{table_name}' ORDER BY ROWID DESC LIMIT 70"
+                    f"SELECT * FROM '{table_name}' ORDER BY ROWID DESC LIMIT 35"
                 )
                 rows = cursor.fetchall()
                 cursor.execute(f"DELETE FROM '{table_name}'")
