@@ -29,14 +29,14 @@ A tool for synchronizing Minecraft server core files.
 - Fabric
 - Forge
 
-## WIP
-
-- NukkitX
+## Things to do next
+- File hash fetch
+- File size calculation
 
 ## Command Usage
 
 ```bash
-Usage: main.py [-h] [-v] [-cl] [-u] [-i] [-s]
+Usage: main.py [-h] [-v] [-cl] [-u] [-i] [-s] [-o]
 
 Options:
   -h, --help        show this help message and exit
@@ -45,4 +45,5 @@ Options:
   -u, --update      Update core list
   -i, --init        Init MCSL-Sync configuration
   -s, --server      Run MCSL-Sync API server
+  -o, --optimize    Optimize Database
 ```
