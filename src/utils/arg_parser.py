@@ -37,3 +37,10 @@ argument_parser.add_argument(
     action="store_true",
     default=False,
 )
+argument_parser.add_argument(
+    "-o",
+    "--optimize",
+    help="Optimize Database",
+    action="store_true",
+    default=False,
+)

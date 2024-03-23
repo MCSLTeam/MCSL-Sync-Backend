@@ -91,5 +91,8 @@ if __name__ == "__main__":
         SyncLogger.success(available_core)
     if args.update:
         asyncio.run(update_default())
+    if args.optimize:
+        from src.utils import optimize_core_data
+        asyncio.run(optimize_core_data())
 
     sys.exit(0)
