@@ -56,5 +56,5 @@ class FabricParser:
                 "core_type": "Fabric",
                 "mc_version": v,
                 "core_version": loader_version,
-            } for loader_version in self.fabric_loader_list
+            } for loader_version in reversed(self.fabric_loader_list)
         )
