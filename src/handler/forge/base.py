@@ -29,9 +29,10 @@ class ForgeLoader:
         del tmp_info
 
     async def serialize_single_build(self, single_info: dict):
+
         return {
             "sync_time": single_info["modified"][:-5] + "Z",
-            "download_url": f"https://bmclapi2.bangbang93.com/maven/net/minecraftforge/forge/{single_info['mcversion']}-{single_info['version']}/forge-{single_info['mcversion']}-{single_info['version']}-installer.jar",
+            "download_url": f"https://bmclapi2.bangbang93.com/forge/download/{single_info["build"]}",
             "core_type": "Forge",
             "mc_version": single_info["mcversion"],
             "core_version": single_info["version"],
