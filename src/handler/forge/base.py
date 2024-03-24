@@ -1,10 +1,11 @@
-from ...utils import get_json, update_database
+from ...utils import get_json, update_database, check_file_exists, SyncLogger
 from asyncio import create_task
 
 class ForgeLoader:
     def __init__(self):
         self.mc_version_list: list = []
         self.total_info: dict[str, str] = {}
+        self.tmp_info: dict[str, str] = {}
 
     async def load_self(self):
         self.mc_version_list = await get_json(
@@ -25,15 +26,18 @@ class ForgeLoader:
             f"https://bmclapi2.bangbang93.com/forge/minecraft/{mc_version}"
         )
         self.total_info[mc_version] = []
-        self.total_info[mc_version] = [await create_task(self.serialize_single_build(build)) for build in tmp_info]
+        self.tmp_info[mc_version] = [await create_task(self.serialize_single_build(build)) for build in tmp_info]
+        self.total_info[mc_version] = [build for build in self.tmp_info[mc_version] if build is not None]
         del tmp_info
 
     async def serialize_single_build(self, single_info: dict):
-
-        return {
-            "sync_time": single_info["modified"][:-5] + "Z",
-            "download_url": f"https://bmclapi2.bangbang93.com/forge/download/{single_info["build"]}",
-            "core_type": "Forge",
-            "mc_version": single_info["mcversion"],
-            "core_version": single_info["version"],
-        }
+        if single_info["build"] > 752:
+            return {
+                "sync_time": single_info["modified"][:-5] + "Z",
+                "download_url": f"https://bmclapi2.bangbang93.com/forge/download/{single_info["build"]}",
+                "core_type": "Forge",
+                "mc_version": single_info["mcversion"],
+                "core_version": single_info["version"],
+            }
+        else:
+            return None

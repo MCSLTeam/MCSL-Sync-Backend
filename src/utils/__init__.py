@@ -1,4 +1,4 @@
-from .network import get_proxy, get_json, get_text  # noqa: F401
+from .network import get_proxy, get_json, get_text, check_file_exists  # noqa: F401
 from .minecraft import MinecraftVersion  # noqa: F401
 from .decorators import Singleton  # noqa: F401
 from .logger import SyncLogger, __version__  # noqa: F401
