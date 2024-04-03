@@ -4,7 +4,7 @@ from .logger import SyncLogger
 from .database import init_pre_database, init_production_database
 
 config_template = {
-    "url": "127.0.0.1",
+    "url": "0.0.0.0",
     "port": 4523,
     "ssl_cert_path": "",
     "ssl_key_path": "",
