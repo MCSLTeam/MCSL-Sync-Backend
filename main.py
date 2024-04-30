@@ -97,4 +97,8 @@ if __name__ == "__main__":
         from src.utils import optimize_core_data
         asyncio.run(optimize_core_data())
 
+    if args.add_node:
+        from src.utils import add_node
+        add_node(args.add_node)
+
     sys.exit(0)

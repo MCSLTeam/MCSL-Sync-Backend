@@ -1,3 +1,1 @@
-from .utils.logger import __version__
-
-__version__ = __version__
+from .utils.logger import __version__  # noqa: F401
