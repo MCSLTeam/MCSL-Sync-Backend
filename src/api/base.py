@@ -58,12 +58,13 @@ async def base_dir():
 @sync_api.route("/public/statistics")
 @sync_api.route("/public/statistics/")
 async def get_app_info():
+    (no_secret_cfg := cfg.copy()).pop("secret_key")
     return await gen_response(
         data={
             "name": "MCSL-Sync",
             "author": "MCSLTeam",
             "version": f"v{__version__}",
-            "config": cfg,
+            "config": no_secret_cfg,
         },
         status_code=200,
         msg="Success!",
@@ -198,6 +199,8 @@ async def get_specified_core(
         if core_version in core_versions_list
         else {}
     )
+    if database_data:
+        database_data["download_url"] = core_type
     resp = await gen_response(
         data={"type": database_type, "build": database_data}
         if core_version in core_versions_list
@@ -218,3 +221,4 @@ async def get_specified_core(
         mc_versions_list,
     )
     return resp
+
