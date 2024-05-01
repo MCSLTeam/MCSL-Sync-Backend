@@ -44,3 +44,10 @@ argument_parser.add_argument(
     action="store_true",
     default=False,
 )
+argument_parser.add_argument(
+    "-n",
+    "--add-node",
+    help="Add a MCSL-Sync-Nodeside Client",
+    type=str,
+    default=None,
+)
