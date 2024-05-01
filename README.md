@@ -26,6 +26,7 @@ A tool for synchronizing Minecraft server core files.
 - Spigot
 - Vanilla
 - Purpur
+- Purformance
 - Fabric
 - Forge
 

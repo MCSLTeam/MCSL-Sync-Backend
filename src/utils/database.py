@@ -21,6 +21,7 @@ available_downloads = [
     "Velocity",
     "Waterfall",
     "Purpur",
+    "Purformance"
     "CatServer",
     "CraftBukkit",
     "Vanilla",
@@ -29,15 +30,9 @@ available_downloads = [
 ]
 
 
-def init_pre_database() -> None:
+def init_database() -> None:
     for core_type in available_downloads:
         with sqlite3.connect(f"data/runtime/{core_type}.db"):
-            pass
-
-
-def init_production_database() -> None:
-    for core_type in available_downloads:
-        with sqlite3.connect(f"data/production/{core_type}.db"):
             pass
 
 
@@ -132,9 +127,7 @@ async def optimize_core_data(database_type: str = "runtime") -> None:
     for core_type in available_downloads:
         with sqlite3.connect(f"data/{database_type}/{core_type}.db") as core:
             cursor = core.cursor()
-            cursor.execute(
-                "SELECT name FROM sqlite_master WHERE type='table'"
-            )
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
             table_list = [row[0] for row in cursor.fetchall()]
             for table_name in table_list:
                 cursor.execute(
