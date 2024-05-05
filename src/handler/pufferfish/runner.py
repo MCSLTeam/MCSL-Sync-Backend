@@ -13,6 +13,6 @@ async def pufferfish_runner() -> None:
     for name, data in serializer.job_data.items():
         for mc_version, builds in data.items():
             update_database("runtime", name, mc_version, builds=builds)
-        SyncLogger.info(f"{name} | All versions were loaded.")
+        SyncLogger.success(f"{name} | All versions were loaded.")
 
     SyncLogger.info(f"Pufferfish | Elpased time: {time.perf_counter() - start:.2f}s.")
