@@ -76,9 +76,6 @@ async def update_default():
 
 
 if __name__ == "__main__":
-    from src.utils import read_settings
-    read_settings()
-
     args = argument_parser.parse_args()
     if not any(value for _, value in args.__dict__.items()):
         argument_parser.error("No argument was specified.")

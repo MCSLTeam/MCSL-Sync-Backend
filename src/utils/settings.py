@@ -43,9 +43,16 @@ def init_settings() -> None:
 
 
 def read_settings() -> dict:
-    with open(file="data/settings.json", mode="r", encoding="utf-8") as f:
-        cfg = loads(f.read())
-    return cfg
+    try:
+        with open(file="data/settings.json", mode="r", encoding="utf-8") as f:
+            cfg = loads(f.read())
+        return cfg
+    except FileNotFoundError:
+        init_settings()
+        read_settings()
+
+
+cfg = read_settings()
 
 
 def add_node(node: str) -> None:
