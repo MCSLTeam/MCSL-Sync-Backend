@@ -75,9 +75,11 @@ async def get_available_node() -> str:
     cfg = read_settings()
     available_nodes = []
     for node in cfg["node_list"]:
-        if await is_node_available(node):
-            available_nodes.append(node)
-    return available_nodes[randint(0, len(available_nodes) - 1)]
-
-
-cfg = read_settings()
+        # if await is_node_available(node):
+        available_nodes.append(node)
+    if len(available_nodes):
+        return available_nodes[
+            randint(0, len(available_nodes) - 1) if len(available_nodes) > 1 else 0
+        ]
+    else:
+        return "error"

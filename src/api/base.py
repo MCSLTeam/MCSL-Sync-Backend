@@ -1,6 +1,6 @@
 from quart import Quart, request
 from werkzeug.exceptions import HTTPException
-from ..utils import __version__, cfg
+from ..utils import __version__, cfg, get_available_node
 
 import uvicorn
 from .model import gen_response
@@ -200,7 +200,7 @@ async def get_specified_core(
         else {}
     )
     if database_data:
-        database_data["download_url"] = core_type
+        database_data["download_url"] = f"{await get_available_node()}core/{core_type}/{mc_version}/{core_version}/download"
     resp = await gen_response(
         data={"type": database_type, "build": database_data}
         if core_version in core_versions_list
