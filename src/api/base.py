@@ -73,14 +73,13 @@ async def get_app_info():
 
 @sync_api.route("/core")
 @sync_api.route("/core/")
-async def get_core(core_type: str = ""):
-    if not core_type:
-        from ..utils import available_downloads
+async def get_core():
+    from ..utils import available_downloads
 
-        resp = await gen_response(
-            data=available_downloads, status_code=200, msg="Success!"
-        )
-        del available_downloads
+    resp = await gen_response(
+        data=available_downloads, status_code=200, msg="Success!"
+    )
+    del available_downloads
     return resp
 
 
