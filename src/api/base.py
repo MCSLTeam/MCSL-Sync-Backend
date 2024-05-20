@@ -17,12 +17,6 @@ def start_production_server():
             cfg.get("ssl_cert_path") if cfg.get("ssl_cert_path") != "" else None
         ),
         ssl_keyfile=cfg.get("ssl_key_path") if cfg.get("ssl_key_path") != "" else None,
-        headers=[
-            (
-                "Access-Control-Allow-Origin",
-                "*"
-            )
-        ],
     )
 
 
