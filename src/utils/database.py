@@ -21,7 +21,7 @@ available_downloads = [
     "Velocity",
     "Waterfall",
     "Purpur",
-    "Purformance"
+    "Purformance",
     "CatServer",
     "CraftBukkit",
     "Vanilla",
