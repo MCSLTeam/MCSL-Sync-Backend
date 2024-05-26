@@ -23,7 +23,7 @@ available_downloads = [
     "Purpur",
     "Purformance",
     "CatServer",
-    "CraftBukkit",
+    "Craftbukkit",
     "Vanilla",
     "Fabric",
     "Forge",
