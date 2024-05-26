@@ -49,12 +49,16 @@ class FabricParser:
 
     async def serialize_single_version_info(self, v: str):
         self.total_info[v] = []
-        self.total_info[v].extend(
-            {
-                "sync_time": "1970-01-01T00:00:00Z",
-                "download_url": f"https://meta.fabricmc.net/v2/versions/loader/{v}/{loader_version}/{self.installer_version}/server/jar",
-                "core_type": "Fabric",
-                "mc_version": v,
-                "core_version": loader_version,
-            } for loader_version in reversed(self.fabric_loader_list)
-        )
+        for loader_version in reversed(self.fabric_loader_list):
+            if int(loader_version.split(".")[1]) >=12:
+                self.total_info[v].append(
+                    {
+                        "sync_time": "1970-01-01T00:00:00Z",
+                        "download_url": f"https://meta.fabricmc.net/v2/versions/loader/{v}/{loader_version}/{self.installer_version}/server/jar",
+                        "core_type": "Fabric",
+                        "mc_version": v,
+                        "core_version": loader_version,
+                    }
+                )
+            else:
+                continue
