@@ -205,7 +205,7 @@ async def get_specified_core(
         else {}
     )
     if database_data:
-        if core_type != "Leaves" or core_type != "Mohist" or core_type != "Banner" or core_type != "Purpur" or core_type != "Purformance":
+        if core_type != "Mohist" or core_type != "Banner" or core_type != "Purpur" or core_type != "Purformance":
             database_data["download_url"] = f"{await get_available_node()}core/{core_type}/{mc_version}/{core_version}/download"
     resp = await gen_response(
         data={"type": database_type, "build": database_data}
