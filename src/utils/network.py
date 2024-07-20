@@ -1,7 +1,7 @@
 from aiohttp import ClientSession
 from .logger import __version__
 from .logger import SyncLogger
-
+from orjson import loads
 
 @SyncLogger.catch
 async def get_proxy() -> str | None:
@@ -17,7 +17,8 @@ async def get_proxy() -> str | None:
 
 @SyncLogger.catch
 async def get_json(link: str) -> dict | list | None:
-    trust_env = not bool(isinstance(await get_proxy(), str))
+    # print(link)
+    trust_env = bool(isinstance(await get_proxy(), str))
     async with ClientSession(
         trust_env=trust_env,
         headers={
@@ -25,12 +26,12 @@ async def get_json(link: str) -> dict | list | None:
         },
     ) as session:
         async with session.get(link) as response:
-            return await response.json()
+            return loads(await response.text())
 
 
 @SyncLogger.catch
 async def get_text(link: str) -> str | None:
-    trust_env = not bool(isinstance(await get_proxy(), str))
+    trust_env = bool(isinstance(await get_proxy(), str))
     async with ClientSession(
         trust_env=trust_env,
         headers={
