@@ -25,6 +25,8 @@ jobs:
       - name: Sync Database
         shell: pwsh
         run: |
+          python -m pip install --upgrade pip
+          python -m pip install -U -r requirements.txt
           python main.py -i
           python main_ez.py -u
 
@@ -55,6 +57,8 @@ jobs:
       - name: Sync Database
         shell: pwsh
         run: |
+          python -m pip install --upgrade pip
+          python -m pip install -U -r requirements.txt
           python main.py -i
           python main_fabric.py -u
 
@@ -85,6 +89,8 @@ jobs:
       - name: Sync Database
         shell: pwsh
         run: |
+          python -m pip install --upgrade pip
+          python -m pip install -U -r requirements.txt
           python main.py -i
           python main_forge.py -u
 
@@ -115,6 +121,8 @@ jobs:
       - name: Sync Database
         shell: pwsh
         run: |
+          python -m pip install --upgrade pip
+          python -m pip install -U -r requirements.txt
           python main.py -i
           python main_papermc.py -u
 
@@ -145,6 +153,8 @@ jobs:
       - name: Sync Database
         shell: pwsh
         run: |
+          python -m pip install --upgrade pip
+          python -m pip install -U -r requirements.txt
           python main.py -i
           python main_leavesmc.py -u
 
@@ -175,6 +185,8 @@ jobs:
       - name: Sync Database
         shell: pwsh
         run: |
+          python -m pip install --upgrade pip
+          python -m pip install -U -r requirements.txt
           python main.py -i
           python main_mohistmc.py -u
 
@@ -205,6 +217,8 @@ jobs:
       - name: Sync Database
         shell: pwsh
         run: |
+          python -m pip install --upgrade pip
+          python -m pip install -U -r requirements.txt
           python main.py -i
           python main_purpurmc.py -u
 
