@@ -1,4 +1,4 @@
-name: Sync database
+name: Sync single database
 
 on: workflow_dispatch
 

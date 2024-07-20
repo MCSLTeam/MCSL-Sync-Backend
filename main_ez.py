@@ -6,6 +6,7 @@ from src.handler import (
     bungeecord_runner,
     pufferfish_runner,
     getbukkit_runner,
+    leavesmc_runner,
 )
 from src.utils import SyncLogger, init_settings, read_settings, argument_parser
 from src import __version__
@@ -58,6 +59,7 @@ async def update_default():
         asyncio.create_task(sponge_powered_runner()),
         asyncio.create_task(pufferfish_runner()),
         asyncio.create_task(getbukkit_runner()),
+        asyncio.create_task(leavesmc_runner()),
     ]
     for task in tasks:
         await task
