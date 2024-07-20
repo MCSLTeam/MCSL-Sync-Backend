@@ -20,7 +20,7 @@ jobs:
           python-version: '3.12'
           cache: 'pip'
           cache-dependency-path: |
-            requirement.txt
+            requirements.txt
 
       - name: Sync Database
         shell: pwsh
@@ -50,7 +50,7 @@ jobs:
           python-version: '3.12'
           cache: 'pip'
           cache-dependency-path: |
-            requirement.txt
+            requirements.txt
 
       - name: Sync Database
         shell: pwsh
@@ -80,7 +80,7 @@ jobs:
           python-version: '3.12'
           cache: 'pip'
           cache-dependency-path: |
-            requirement.txt
+            requirements.txt
 
       - name: Sync Database
         shell: pwsh
@@ -110,7 +110,7 @@ jobs:
           python-version: '3.12'
           cache: 'pip'
           cache-dependency-path: |
-            requirement.txt
+            requirements.txt
 
       - name: Sync Database
         shell: pwsh
@@ -140,7 +140,7 @@ jobs:
           python-version: '3.12'
           cache: 'pip'
           cache-dependency-path: |
-            requirement.txt
+            requirements.txt
 
       - name: Sync Database
         shell: pwsh
@@ -170,7 +170,7 @@ jobs:
           python-version: '3.12'
           cache: 'pip'
           cache-dependency-path: |
-            requirement.txt
+            requirements.txt
 
       - name: Sync Database
         shell: pwsh
@@ -200,7 +200,7 @@ jobs:
           python-version: '3.12'
           cache: 'pip'
           cache-dependency-path: |
-            requirement.txt
+            requirements.txt
 
       - name: Sync Database
         shell: pwsh
