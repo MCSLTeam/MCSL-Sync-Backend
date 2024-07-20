@@ -7,7 +7,8 @@ permissions: write-all
 jobs:
   Easy:
     runs-on: windows-2019
-    fail-fast: false
+    strategy:
+      fail-fast: false
     steps:
 
       - name: Checkout Repo
@@ -36,6 +37,8 @@ jobs:
 
   Fabric:
     runs-on: windows-2019
+    strategy:
+      fail-fast: false
     steps:
 
       - name: Checkout Repo
@@ -64,6 +67,8 @@ jobs:
 
   Forge:
     runs-on: windows-2019
+    strategy:
+      fail-fast: false
     steps:
 
       - name: Checkout Repo
@@ -92,6 +97,8 @@ jobs:
 
   PaperMC:
     runs-on: windows-2019
+    strategy:
+      fail-fast: false
     steps:
 
       - name: Checkout Repo
@@ -120,6 +127,8 @@ jobs:
 
   LeavesMC:
     runs-on: windows-2019
+    strategy:
+      fail-fast: false
     steps:
 
       - name: Checkout Repo
@@ -148,6 +157,8 @@ jobs:
 
   MohistMC:
     runs-on: windows-2019
+    strategy:
+      fail-fast: false
     steps:
 
       - name: Checkout Repo
@@ -176,6 +187,8 @@ jobs:
 
   PurpurMC:
     runs-on: windows-2019
+    strategy:
+      fail-fast: false
     steps:
 
       - name: Checkout Repo
