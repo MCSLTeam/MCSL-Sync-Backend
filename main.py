@@ -49,7 +49,7 @@ PurpurMC
 ├─Purpur
 └─Purformance
 CatServer
-CraftBukit
+Craftbukkit
 Vanilla
 Fabric
 Forge"""
