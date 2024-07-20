@@ -1,0 +1,203 @@
+name: Sync database
+
+on: workflow_dispatch
+
+permissions: write-all
+
+jobs:
+  Easy:
+    runs-on: windows-2019
+    fail-fast: false
+    steps:
+
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: |
+            requirement.txt
+
+      - name: Sync Database
+        shell: pwsh
+        run: |
+          python main.py -i
+          python main_ez.py -u
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: Easy
+          path: |
+            data/runtime/*
+
+  Fabric:
+    runs-on: windows-2019
+    steps:
+
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: |
+            requirement.txt
+
+      - name: Sync Database
+        shell: pwsh
+        run: |
+          python main.py -i
+          python main_fabric.py -u
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: Fabric
+          path: |
+            data/runtime/*
+
+  Forge:
+    runs-on: windows-2019
+    steps:
+
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: |
+            requirement.txt
+
+      - name: Sync Database
+        shell: pwsh
+        run: |
+          python main.py -i
+          python main_forge.py -u
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: Forge
+          path: |
+            data/runtime/*
+
+  PaperMC:
+    runs-on: windows-2019
+    steps:
+
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: |
+            requirement.txt
+
+      - name: Sync Database
+        shell: pwsh
+        run: |
+          python main.py -i
+          python main_papermc.py -u
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: PaperMC
+          path: |
+            data/runtime/*
+
+  LeavesMC:
+    runs-on: windows-2019
+    steps:
+
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: |
+            requirement.txt
+
+      - name: Sync Database
+        shell: pwsh
+        run: |
+          python main.py -i
+          python main_leavesmc.py -u
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: LeavesMC
+          path: |
+            data/runtime/*
+
+  MohistMC:
+    runs-on: windows-2019
+    steps:
+
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: |
+            requirement.txt
+
+      - name: Sync Database
+        shell: pwsh
+        run: |
+          python main.py -i
+          python main_mohistmc.py -u
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: MohistMC
+          path: |
+            data/runtime/*
+
+  PurpurMC:
+    runs-on: windows-2019
+    steps:
+
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: |
+            requirement.txt
+
+      - name: Sync Database
+        shell: pwsh
+        run: |
+          python main.py -i
+          python main_purpurmc.py -u
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: PurpurMC
+          path: |
+            data/runtime/*
