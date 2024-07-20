@@ -34,7 +34,7 @@ class ForgeLoader:
         del tmp_info
 
     async def serialize_single_build(self, single_info: dict):
-        if single_info["build"] > 752:
+        if single_info["build"] > 752 and single_info["build"] in [960, 961, 963, 964]:
             return {
                 "sync_time": single_info["modified"][:-5] + "Z",
                 "download_url": f"https://bmclapi2.bangbang93.com/forge/download/{single_info["build"]}",
