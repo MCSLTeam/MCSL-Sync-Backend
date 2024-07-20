@@ -1,4 +1,4 @@
-from .base import LeavesReleaseSerializer
+from .base import LeavesLoader
 from ...utils import SyncLogger
 
 
@@ -7,7 +7,7 @@ async def leavesmc_runner() -> None:
 
     start = time.perf_counter()
 
-    await LeavesReleaseSerializer().get_assets()
+    await LeavesLoader().load_self()
 
     SyncLogger.info(
         f"LeavesMC | Elpased time: {time.perf_counter() - start:.2f}s."
