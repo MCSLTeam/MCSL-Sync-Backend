@@ -24,7 +24,6 @@ config_template = {
 }
 makedirs("data", exist_ok=True)
 makedirs("logs", exist_ok=True)
-makedirs("data/production", exist_ok=True)
 makedirs("data/runtime", exist_ok=True)
 
 
