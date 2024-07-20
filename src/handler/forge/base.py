@@ -19,7 +19,10 @@ class ForgeLoader:
             await task
         del tasks, self.mc_version_list
         for mc_version, builds in self.total_info.items():
-            update_database("runtime", "Forge", mc_version, builds=builds)
+            if mc_version == "1.7.10_pre4":
+                continue
+            else:
+                update_database("runtime", "Forge", mc_version, builds=builds)
 
     async def fetch_single_mc_version(self, mc_version: str):
         tmp_info = await get_json(
