@@ -12,3 +12,4 @@ from .fabric import fabric_runner  # noqa: F401
 from .forge import forge_runner  # noqa: F401
 from .nukkitx import nukkitx_runner  # noqa: F401
 from .akarin import akarin_runner  # noqa: F401
+from .thermos import thermos_runner  # noqa: F401

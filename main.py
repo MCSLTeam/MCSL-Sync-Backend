@@ -14,6 +14,7 @@ from src.handler import (
     forge_runner,
     nukkitx_runner,
     akarin_runner,
+    thermos_runner,
 )
 from src.utils import SyncLogger, init_settings, read_settings, argument_parser
 from src import __version__
@@ -64,6 +65,7 @@ async def update_default():
         asyncio.create_task(forge_runner()),
         asyncio.create_task(fabric_runner()),
         asyncio.create_task(nukkitx_runner()),
+        asyncio.create_task(thermos_runner()),
         asyncio.create_task(arclight_powered_runner()),
         asyncio.create_task(akarin_runner()),
         asyncio.create_task(catserver_runner()),

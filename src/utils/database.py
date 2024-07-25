@@ -28,6 +28,7 @@ available_downloads = [
     "Fabric",
     "Forge",
     "NukkitX",
+    "Thermos",
 ]
 
 
