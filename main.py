@@ -15,6 +15,7 @@ from src.handler import (
     nukkitx_runner,
     akarin_runner,
     thermos_runner,
+    contigo_runner,
 )
 from src.utils import SyncLogger, init_settings, read_settings, argument_parser
 from src import __version__
@@ -76,6 +77,7 @@ async def update_default():
         asyncio.create_task(leavesmc_runner()),
         asyncio.create_task(purpurmc_runner()),
         asyncio.create_task(mohistmc_runner()),
+        asyncio.create_task(contigo_runner()),
     ]
     for task in tasks:
         await task
