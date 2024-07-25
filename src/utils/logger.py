@@ -1,6 +1,6 @@
 from loguru import logger
 
-__version__ = "0.1.0"
+__version__ = "1.1.0"
 SyncLogger = logger
 SyncLogger.add(
     sink="logs/{time}.log",
