@@ -41,7 +41,7 @@ class PufferfishCISerializer(JenkinsCISerializer):
         del tasks
 
     @SyncLogger.catch
-    async def load_single_version(self, job: str) -> list[dict[str, str]]:
+    async def load_single_version(self, job: dict) -> list[dict[str, str]]:
         job_name = job["url"].replace(self.end_point, "").replace("/job/", "")[:-1]
         tmp_data = await self.load_single_job(job_name=job_name)
         from time import strftime, localtime
