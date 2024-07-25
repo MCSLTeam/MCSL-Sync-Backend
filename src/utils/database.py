@@ -33,6 +33,8 @@ available_downloads = [
     "Contigo",
     "Luminol",
     "LightingLuminol",
+    "Geyser",
+    "Floodgate",
 ]
 
 

@@ -35,8 +35,11 @@ A tool for synchronizing Minecraft server core files.
 - Contigo
 - Luminol
 - LightingLuminol
+- Geyser
+- Floodgate
 
 ## Things to do next
+
 - File hash fetch
 - File size calculation
 

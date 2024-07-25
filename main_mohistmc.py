@@ -38,6 +38,9 @@ PurpurMC
 LuminolMC
 ├─Luminol
 └─LightingLuminol
+GeyserMC
+├─Geyser
+└─Floodgate
 NukkitX
 Thermos
 Contigo

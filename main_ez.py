@@ -51,6 +51,9 @@ PurpurMC
 LuminolMC
 ├─Luminol
 └─LightingLuminol
+GeyserMC
+├─Geyser
+└─Floodgate
 NukkitX
 Thermos
 Contigo
@@ -76,6 +79,7 @@ async def update_default():
         asyncio.create_task(thermos_runner()),
         asyncio.create_task(contigo_runner()),
         asyncio.create_task(luminol_runner()),
+
     ]
     for task in tasks:
         await task

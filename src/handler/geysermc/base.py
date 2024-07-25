@@ -9,14 +9,39 @@ class _ProjectList(object):
         self.project_list: list = []
 
     async def load_self(self, retry: int = 0) -> None:
-        # fmt: off
         if retry:
-            SyncLogger.warning("PaperMC | Retrying getting project list...")
-        self.project_id_list = (await get_json("https://api.papermc.io/v2/projects/")).get("projects", None)  # noqa: E501
+            SyncLogger.warning("GeyserMC | Retrying getting project list...")
+        self.project_id_list = (
+            await get_json("https://download.geysermc.org/v2/projects")
+        ).get("projects", None)  # noqa: E501
         if self.project_id_list is None:
-            SyncLogger.error("PaperMC | Project list load failed!")
-            return self.load_self(retry=(retry+1))
-        # fmt: on
+            SyncLogger.error("GeyserMC | Project list load failed!")
+            return self.load_self(retry=(retry + 1))
+        else:
+            try:
+                self.project_id_list.remove("erosion")
+            except ValueError:
+                pass
+            try:
+                self.project_id_list.remove("geyserconnect")
+            except ValueError:
+                pass
+            try:
+                self.project_id_list.remove("geyseroptionalpack")
+            except ValueError:
+                pass
+            try:
+                self.project_id_list.remove("hydraulic")
+            except ValueError:
+                pass
+            try:
+                self.project_id_list.remove("geyserpreview")
+            except ValueError:
+                pass
+            try:
+                self.project_id_list.remove("thirdpartycosmetics")
+            except ValueError:
+                pass
 
     async def load_all_projects(self) -> None:
         tasks = [
@@ -49,20 +74,21 @@ class _ProjectList(object):
 class Project(object):
     def __init__(self, project_id: str) -> None:
         self.project_id: str = project_id
-        self.project_name: str = project_id.capitalize()
+        self.project_name = self.project_id.capitalize()
         self.version_label_list: list = []
         self.versions: list[SingleVersion] = []
 
     async def load_self(self, retry: int = 0) -> None:
         if retry:
-            SyncLogger.warning(f"{self.project_name} | Retrying getting project info...")
+            SyncLogger.warning(
+                f"{self.project_name} | Retrying getting project info..."
+            )
         tmp_data = await get_json(
-            "https://api.papermc.io/v2/projects/{project_id}/".format(
+            "https://download.geysermc.org/v2/projects/{project_id}".format(
                 project_id=self.project_id
             )
         )  # type: dict
 
-        self.project_name = tmp_data.get("project_name", None)
         self.version_label_list = tmp_data.get("versions", None)
 
         if self.project_name is None or self.version_label_list is None:
@@ -71,7 +97,7 @@ class Project(object):
                     project_id=self.project_id.capitalize()
                 )
             )
-            return self.load_self(retry=(retry + 1))
+            return await self.load_self(retry=(retry + 1))
         await self.load_version_list()
 
     async def load_version_list(self) -> None:
@@ -121,7 +147,7 @@ class SingleVersion(object):
                 "{project_id} | {version} | Retrying getting version info..."
             )
         tmp_data = await get_json(
-            "https://api.papermc.io/v2/projects/{project_id}/versions/{version}/".format(
+            "https://download.geysermc.org/v2/projects/{project_id}/versions/{version}".format(
                 project_id=self.project_id, version=self.version
             )
         )
@@ -150,15 +176,17 @@ class SingleVersion(object):
 
 
 class SingleDownload(object):
-    def __init__(self, data: dict, name: str, version: str, build: int) -> None:
+    def __init__(self, data: tuple, name: str, version: str, build: int) -> None:
         if data is None:
+            self.type = None
             self.name = None
             self.sha256 = None
         else:
-            self.name: str = data.get("name", None)
-            self.sha256: str = data.get("sha256", None)
-        self.link: str = "https://api.papermc.io/v2/projects/{name}/versions/{version}/builds/{build}/downloads/{file_name}".format(
-            name=name.lower(), version=version, build=build, file_name=self.name
+            self.type: str = data[0]
+            self.name: str = data[1].get("name", None)
+            self.sha256: str = data[1].get("sha256", None)
+        self.link: str = "https://download.geysermc.org/v2/projects/{name}/versions/{version}/builds/{build}/downloads/{file_name}".format(
+            name=name.lower(), version=version, build=build, file_name=self.type
         )
 
     def __str__(self) -> str:
@@ -167,12 +195,10 @@ class SingleDownload(object):
 
 class Downloads(object):
     def __init__(self, data: dict, name: str, version: str, build: int) -> None:
-        self.application: SingleDownload = SingleDownload(
-            data=data.get("application", None), name=name, version=version, build=build
-        )
-
-    def __str__(self) -> str:
-        return self.application.link
+        self.data: list[SingleDownload] = [
+            SingleDownload(data=download, name=name, version=version, build=build)
+            for download in data.items()
+        ]
 
 
 class SingleBuild(object):
@@ -185,14 +211,17 @@ class SingleBuild(object):
             data=build_info["downloads"], name=name, version=version, build=self.build
         )
 
-    async def gather_single_build(self) -> dict[str, str]:
-        return {
-            "sync_time": str(self.time).split(".")[0] + "Z",
-            "download_url": str(self.downloads),
-            "core_type": self.name,
-            "mc_version": str(self.version),
-            "core_version": "build" + str(self.build),
-        }
+    async def gather_single_build(self) -> list[dict[str, str]]:
+        return [
+            {
+                "sync_time": str(self.time).split(".")[0] + "Z",
+                "download_url": str(download),
+                "core_type": self.name,
+                "mc_version": str(self.version),
+                "core_version": f"build{str(self.build)}-{download.type}",
+            }
+            for download in self.downloads.data
+        ]
 
 
 class BuildsManager(object):
@@ -205,7 +234,7 @@ class BuildsManager(object):
     async def load_self(self) -> None:
         try:
             tmp_data = await get_json(
-                "https://api.papermc.io/v2/projects/{project_id}/versions/{version}/builds/".format(
+                "https://download.geysermc.org/v2/projects/{project_id}/versions/{version}/builds".format(
                     project_id=self.project_id, version=self.version
                 )
             )
@@ -225,7 +254,10 @@ class BuildsManager(object):
             SyncLogger.error("".join(format_exception(e)))
 
     async def gather_builds(self) -> list:
-        return [await build.gather_single_build() for build in self.builds]
+        data = []
+        for build in self.builds:
+            data.extend(await build.gather_single_build())
+        return data
 
 
-PaperLoader = _ProjectList
+GeyserLoader = _ProjectList
