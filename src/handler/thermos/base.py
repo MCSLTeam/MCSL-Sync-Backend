@@ -10,7 +10,7 @@ class ThermosReleaseSerializer(GitHubReleaseSerializer):
         for release in self.release_list:
             release["core_type"] = "Thermos"
             release["mc_version"] = "1.7.10"
-            release["core_version"] = release["tag_name"]
+            release["core_version"] = "build" + release["tag_name"]
             release.pop("tag_name")
             release.pop("target_commitish")
             release.pop("name")
