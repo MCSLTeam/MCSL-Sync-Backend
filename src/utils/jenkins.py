@@ -19,11 +19,10 @@ class JenkinsCISerializer:
         tmp_builds = await get_json(
             f"{self.end_point}/job/{job_name}/api/json?tree=builds[number,timestamp,status,result,artifacts[fileName,relativePath]]"
         )  # type: dict[str, str]
-        return [
-            {
-                key: value
-                for key, value in build.items()
-                if key != "_class" and build.get("result") == "SUCCESS"
-            }
-            for build in tmp_builds["builds"]
-        ]
+        result = []
+        for build in tmp_builds["builds"]:
+            if build.get("result") == "SUCCESS":
+                result.append(
+                    {key: value for key, value in build.items() if key != "_class"}
+                )
+        return result
