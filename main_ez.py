@@ -12,6 +12,7 @@ from src.handler import (
     thermos_runner,
     contigo_runner,
     luminol_runner,
+    geysermc_runner,
 )
 from src.utils import SyncLogger, init_settings, read_settings, argument_parser
 from src import __version__
@@ -79,7 +80,7 @@ async def update_default():
         asyncio.create_task(thermos_runner()),
         asyncio.create_task(contigo_runner()),
         asyncio.create_task(luminol_runner()),
-
+        asyncio.create_task(geysermc_runner()),
     ]
     for task in tasks:
         await task
