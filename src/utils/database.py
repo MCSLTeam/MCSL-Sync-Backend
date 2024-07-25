@@ -27,8 +27,12 @@ available_downloads = [
     "Vanilla",
     "Fabric",
     "Forge",
+    "Akarin",
     "NukkitX",
     "Thermos",
+    "Contigo",
+    "Luminol",
+    "LightingLuminol",
 ]
 
 

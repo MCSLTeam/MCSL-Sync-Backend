@@ -11,6 +11,7 @@ from src.handler import (
     akarin_runner,
     thermos_runner,
     contigo_runner,
+    luminol_runner,
 )
 from src.utils import SyncLogger, init_settings, read_settings, argument_parser
 from src import __version__
@@ -47,6 +48,13 @@ PaperMC
 PurpurMC
 ├─Purpur
 └─Purformance
+LuminolMC
+├─Luminol
+└─LightingLuminol
+NukkitX
+Thermos
+Contigo
+Akarin
 CatServer
 Craftbukkit
 Vanilla
@@ -67,6 +75,7 @@ async def update_default():
         asyncio.create_task(nukkitx_runner()),
         asyncio.create_task(thermos_runner()),
         asyncio.create_task(contigo_runner()),
+        asyncio.create_task(luminol_runner()),
     ]
     for task in tasks:
         await task

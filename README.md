@@ -29,6 +29,12 @@ A tool for synchronizing Minecraft server core files.
 - Purformance
 - Fabric
 - Forge
+- Akarin
+- NukkitX
+- Thermos
+- Contigo
+- Luminol
+- LightingLuminol
 
 ## Things to do next
 - File hash fetch

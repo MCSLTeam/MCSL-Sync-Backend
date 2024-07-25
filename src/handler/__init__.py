@@ -14,3 +14,4 @@ from .nukkitx import nukkitx_runner  # noqa: F401
 from .akarin import akarin_runner  # noqa: F401
 from .thermos import thermos_runner  # noqa: F401
 from .contigo import contigo_runner  # noqa: F401
+from .luminolmc import luminol_runner  # noqa: F401
