@@ -12,6 +12,7 @@ from src.handler import (
     purpurmc_runner,
     fabric_runner,
     forge_runner,
+    nukkitx_runner,
 )
 from src.utils import SyncLogger, init_settings, read_settings, argument_parser
 from src import __version__
@@ -48,6 +49,7 @@ PaperMC
 PurpurMC
 ├─Purpur
 └─Purformance
+NukkitX
 CatServer
 Craftbukkit
 Vanilla
@@ -70,6 +72,7 @@ async def update_default():
         asyncio.create_task(leavesmc_runner()),
         asyncio.create_task(purpurmc_runner()),
         asyncio.create_task(mohistmc_runner()),
+        asyncio.create_task(nukkitx_runner()),
     ]
     for task in tasks:
         await task

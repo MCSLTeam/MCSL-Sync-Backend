@@ -27,6 +27,7 @@ available_downloads = [
     "Vanilla",
     "Fabric",
     "Forge",
+    "NukkitX",
 ]
 
 
