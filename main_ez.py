@@ -8,6 +8,7 @@ from src.handler import (
     getbukkit_runner,
     leavesmc_runner,
     nukkitx_runner,
+    akarin_runner,
 )
 from src.utils import SyncLogger, init_settings, read_settings, argument_parser
 from src import __version__
@@ -52,11 +53,11 @@ Forge"""
 
 
 async def update_default():
-    # The further down the sort, the harder it is to load.
     tasks = [
         asyncio.create_task(bungeecord_runner()),
         asyncio.create_task(arclight_powered_runner()),
         asyncio.create_task(catserver_runner()),
+        asyncio.create_task(akarin_runner()),
         asyncio.create_task(sponge_powered_runner()),
         asyncio.create_task(pufferfish_runner()),
         asyncio.create_task(getbukkit_runner()),

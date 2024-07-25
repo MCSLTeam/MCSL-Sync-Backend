@@ -43,7 +43,6 @@ Forge"""
 
 
 async def update_default():
-    # The further down the sort, the harder it is to load.
     tasks = [
         asyncio.create_task(papermc_runner()),
     ]
