@@ -56,7 +56,9 @@ cfg = read_settings()
 
 def add_node(node: str) -> None:
     cfg = read_settings()
-    cfg["node_list"].append(node)
+    node_endpoint = node.split("|")[0]
+    node_name = node.split("|")[1]
+    cfg["node_list"].append({"endpoint": node_endpoint, "name": node_name})
     with open(file="data/settings.json", mode="w", encoding="utf-8") as f:
         f.write(dumps(cfg, option=OPT_INDENT_2))
 
@@ -75,7 +77,7 @@ async def get_available_node() -> str:
     available_nodes = []
     for node in cfg["node_list"]:
         # if await is_node_available(node):
-        available_nodes.append(node)
+        available_nodes.append(node.get("endpoint"))
     if len(available_nodes):
         return available_nodes[
             randint(0, len(available_nodes) - 1) if len(available_nodes) > 1 else 0
