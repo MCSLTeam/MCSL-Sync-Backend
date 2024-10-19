@@ -1,6 +1,6 @@
 from quart import Quart, request
 from werkzeug.exceptions import HTTPException
-from ..utils import __version__, cfg, get_available_node
+from ..utils import __version__, cfg, get_available_node, get_alist_file_url
 
 import uvicorn
 from .model import gen_response
@@ -206,7 +206,13 @@ async def get_specified_core(
     )
     if database_data:
         if core_type != "Mohist" and core_type != "Banner" and core_type != "Purpur" and core_type != "Purformance":
-            database_data["download_url"] = f"{await get_available_node()}core/{core_type}/{mc_version}/{core_version}/download"
+            download_endpoint = await get_available_node()
+            if download_endpoint != "error":
+                if download_endpoint.get("type") == "nodeside":
+                    database_data["download_url"] = f"{download_endpoint.get("endpoint")}core/{core_type}/{mc_version}/{core_version}/download"
+                elif download_endpoint.get("type") == "alist":
+                    # database_data["download_url"] = f"{download_endpoint.get("endpoint")}/{core_type}/{mc_version}/{core_version}"
+                    database_data["download_url"] = await get_alist_file_url(host=download_endpoint.get("endpoint"), path=f"{download_endpoint.get("alist_subpath")}/{core_type}/{mc_version}/{core_type}-{mc_version}-{core_version}.jar")
     resp = await gen_response(
         data={"type": database_type, "build": database_data}
         if core_version in core_versions_list

@@ -7,4 +7,5 @@ from .settings import cfg, init_settings, read_settings, add_node, get_available
 from .github_releases import GitHubReleaseSerializer  # noqa: F401
 from .jenkins import JenkinsCISerializer  # noqa: F401
 from .arg_parser import argument_parser  # noqa: F401
+from .alist import get_alist_file_url  # noqa: F401
 from .database import optimize_core_data, available_downloads, update_database, get_mc_versions, get_core_versions, get_specified_core_data  # noqa: F401

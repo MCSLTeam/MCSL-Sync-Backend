@@ -56,9 +56,15 @@ cfg = read_settings()
 
 def add_node(node: str) -> None:
     cfg = read_settings()
-    node_endpoint = node.split("|")[0]
-    node_name = node.split("|")[1]
-    cfg["node_list"].append({"endpoint": node_endpoint, "name": node_name})
+    pre_data = {
+        "type": node.split("|")[0],
+        "endpoint": node.split("|")[1],
+        "name": node.split("|")[2],
+    }
+    if pre_data.get("type").startswith("alist"):
+        pre_data["alist_subpath"] = pre_data["type"].split("@")[1]
+        pre_data["type"] = "alist"
+    cfg["node_list"].append(pre_data)
     with open(file="data/settings.json", mode="w", encoding="utf-8") as f:
         f.write(dumps(cfg, option=OPT_INDENT_2))
 
@@ -72,12 +78,13 @@ async def is_node_available(node: str) -> bool:
         return False
 
 
-async def get_available_node() -> str:
+async def get_available_node() -> dict:
     cfg = read_settings()
-    available_nodes = []
-    for node in cfg["node_list"]:
-        # if await is_node_available(node):
-        available_nodes.append(node.get("endpoint"))
+    # available_nodes = []
+    # for node in cfg["node_list"]:
+    #     # if await is_node_available(node):
+    #     available_nodes.append(node)
+    available_nodes = cfg["node_list"]
     if len(available_nodes):
         return available_nodes[
             randint(0, len(available_nodes) - 1) if len(available_nodes) > 1 else 0
