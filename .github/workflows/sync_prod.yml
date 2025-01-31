@@ -31,7 +31,7 @@ jobs:
           python main.py -u
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: Db
           path: |
