@@ -31,7 +31,7 @@ jobs:
           python main_ez.py -u
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: Easy
           path: |
@@ -63,7 +63,7 @@ jobs:
           python main_fabric.py -u
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: Fabric
           path: |
@@ -95,7 +95,7 @@ jobs:
           python main_forge.py -u
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: Forge
           path: |
@@ -127,7 +127,7 @@ jobs:
           python main_papermc.py -u
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: PaperMC
           path: |
@@ -159,7 +159,7 @@ jobs:
           python main_leavesmc.py -u
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: LeavesMC
           path: |
@@ -191,7 +191,7 @@ jobs:
           python main_mohistmc.py -u
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: MohistMC
           path: |
@@ -223,7 +223,7 @@ jobs:
           python main_purpurmc.py -u
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: PurpurMC
           path: |
